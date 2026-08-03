@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Garage Management System — Rebuilding How Service Stations Operate</title>
+<meta name="description" content="A unified operational platform for Petromin Express service stations — job cards, bays, inventory and finance in one workflow-first system.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   GARAGE MANAGEMENT SYSTEM · case study
+   Built on STRATUS — the same three-layer token architecture, type scale and
+   spatial rhythm as the portfolio, so this page and that one are one system.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── LAYER 1 · PRIMITIVES ──────────────────────────────────────────────── */
+:root{
+  --p-neutral-0:#ffffff;    --p-neutral-25:#fbfbfd;  --p-neutral-50:#f5f5f7;
+  --p-neutral-100:#e8e8ed;  --p-neutral-200:#d2d2d7; --p-neutral-300:#a1a1a6;
+  --p-neutral-400:#86868b;  --p-neutral-500:#6e6e73; --p-neutral-700:#424245;
+  --p-neutral-800:#333336;  --p-neutral-900:#1d1d1f; --p-neutral-1000:#000000;
+
+  --p-accent-300:#8fa8f5;   --p-accent-400:#5C82EA;  --p-accent-500:#2F5FE0;
+  --p-accent-600:#2A55C9;   --p-accent-700:#1F3F96;
+
+  --p-signal-success:#1C8F63;
+  --p-signal-curious:#B8860B;
+  --p-signal-critical:#D33A2C;
+
+  --p-font-display:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --p-font-text:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --p-font-mono:"Geist Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  --p-weight-regular:400; --p-weight-medium:500;
+  --p-weight-semibold:500;   /* section titles are Medium, matching the portfolio */
+  --p-weight-bold:700;
+}
+
+/* ─── LAYER 2 · SEMANTIC ────────────────────────────────────────────────── */
+:root{
+  --color-text-primary:var(--p-neutral-900);
+  --color-text-secondary:var(--p-neutral-500);
+  --color-text-tertiary:var(--p-neutral-400);
+  --color-text-inverse:var(--p-neutral-0);
+  --color-text-link:var(--p-accent-600);
+  --color-text-link-hover:var(--p-accent-500);
+
+  --color-surface-page:var(--p-neutral-0);
+  --color-surface-sunken:var(--p-neutral-50);
+  --color-surface-raised:var(--p-neutral-0);
+  --color-surface-fill:var(--p-neutral-100);
+  --color-surface-inverse:var(--p-neutral-900);
+  --color-surface-accent:var(--p-accent-500);
+  --color-surface-accent-subtle:color-mix(in srgb,var(--p-accent-500) 8%,transparent);
+  --color-surface-accent-tint:color-mix(in srgb,var(--p-accent-500) 12%,transparent);
+
+  --color-border-subtle:var(--p-neutral-200);
+  --color-border-soft:var(--p-neutral-100);
+  --color-border-strong:var(--p-neutral-300);
+  --color-border-focus:var(--p-accent-500);
+
+  --color-action-primary-bg:var(--p-accent-500);
+  --color-action-primary-bg-hover:var(--p-accent-400);
+  --color-action-primary-text:var(--p-neutral-0);
+
+  /* ── TYPE SCALE ──
+     Instrument Sans on the display steps, Inter on the text steps. Tracking
+     tightens monotonically as size grows; no sign-flip, because a geometric
+     grotesque has no optical-size compensation to correct for.            */
+  --font-display-xl-size:clamp(2.5rem,1.10rem + 5.83vw,5rem);
+  --font-display-xl-lh:1.02;   --font-display-xl-ls:-0.018em;
+  --font-display-l-size:clamp(2.25rem,1.34rem + 3.79vw,4rem);
+  --font-display-l-lh:1.05;    --font-display-l-ls:-0.016em;
+  --font-display-m-size:clamp(2rem,1.35rem + 2.72vw,3.5rem);
+  --font-display-m-lh:1.06;    --font-display-m-ls:-0.015em;
+  --font-display-s-size:clamp(1.75rem,1.35rem + 1.70vw,3rem);
+  --font-display-s-lh:1.08;    --font-display-s-ls:-0.013em;
+  --font-title-xl-size:clamp(1.75rem,1.55rem + 0.85vw,2.5rem);
+  --font-title-xl-lh:1.10;     --font-title-xl-ls:-0.012em;
+  --font-title-l-size:clamp(1.5rem,1.37rem + 0.55vw,2rem);
+  --font-title-l-lh:1.14;      --font-title-l-ls:-0.010em;
+  --font-title-m-size:clamp(1.375rem,1.28rem + 0.41vw,1.75rem);
+  --font-title-m-lh:1.16;      --font-title-m-ls:-0.011em;
+  --font-title-s-size:clamp(1.25rem,1.19rem + 0.27vw,1.5rem);
+  --font-title-s-lh:1.20;      --font-title-s-ls:-0.010em;
+  --font-lead-size:clamp(1.1875rem,1.16rem + 0.14vw,1.3125rem);
+  --font-lead-lh:1.42;         --font-lead-ls:-0.011em;
+  --font-body-size:1.0625rem;
+  --font-body-lh:1.50;         --font-body-ls:-0.011em;
+  --font-callout-size:0.875rem;
+  --font-callout-lh:1.45;      --font-callout-ls:-0.006em;
+  --font-caption-size:0.75rem;
+  --font-caption-lh:1.35;      --font-caption-ls:0em;
+
+  --space-1:4px;   --space-2:8px;   --space-3:12px;  --space-4:16px;
+  --space-5:20px;  --space-6:24px;  --space-7:32px;  --space-8:40px;
+  --space-9:48px;  --space-10:64px; --space-11:80px; --space-12:110px;
+  --space-13:130px;--space-14:160px;
+
+  /* ══ SPACING HIERARCHY ══
+     Four tiers, and one rule: the gap between two sections must always read
+     as larger than the largest gap inside either of them. Before this, two
+     projects sat 96px apart while two whole sections sat 88–112px apart —
+     the page had no chapters, just an even drizzle of white.
+
+                        mobile   desktop
+       1 · section       64      120     two sections   (2 x --gap-section)
+       2 · block         36       72     major blocks inside a section
+       3 · group         24       44     a heading and its content
+       4 · item          14       24     inside a group
+
+     --gap-section hits its 60px ceiling at a 1071px viewport, so every
+     desktop width gets exactly 120px between sections — it does not keep
+     growing on a wide monitor. The floor lands by 571px, so phones get 64.
+
+     Each tier is roughly double the one under it, so the steps are legible
+     rather than merely different.                                        */
+  --gap-section:clamp(32px,5.6vw,60px);    /* boundary = 2x → 64 mobile · 120 desktop */
+  --gap-block:clamp(36px,4vw,72px);
+  --gap-block-half:clamp(18px,2vw,36px);   /* when both sides pad, e.g. .proj */
+  --gap-group:clamp(24px,2.6vw,44px);
+  --gap-item:clamp(14px,1.4vw,24px);
+
+  --container-narrow:692px;
+  --container-default:980px;
+  --container-wide:min(1680px,87.5%);
+  --gutter:22px;
+
+  --radius-xs:5px;  --radius-sm:8px;  --radius-md:12px; --radius-lg:18px;
+  --radius-xl:28px; --radius-2xl:36px; --radius-pill:980px;
+
+  --elevation-1:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);
+  --elevation-2:0 4px 12px rgba(0,0,0,.06),0 12px 32px rgba(0,0,0,.06);
+  --elevation-3:0 8px 24px rgba(0,0,0,.08),0 24px 64px rgba(0,0,0,.10);
+
+  --ease-standard:cubic-bezier(.4,0,.6,1);
+  --ease-decel:cubic-bezier(.25,.1,.3,1);
+  --dur-fast:200ms; --dur-base:300ms; --dur-slow:500ms; --dur-reveal:800ms;
+  --focus-ring:0 0 0 4px color-mix(in srgb,var(--p-accent-500) 40%,transparent);
+}
+
+html[data-theme="dark"]{
+  --color-text-primary:#f5f5f7;
+  --color-text-secondary:var(--p-neutral-400);
+  --color-text-tertiary:var(--p-neutral-500);
+  --color-text-inverse:var(--p-neutral-900);
+  --color-text-link:var(--p-accent-400);
+  --color-surface-page:var(--p-neutral-1000);
+  --color-surface-sunken:var(--p-neutral-900);
+  --color-surface-raised:var(--p-neutral-900);
+  --color-surface-fill:var(--p-neutral-800);
+  --color-surface-inverse:var(--p-neutral-50);
+  --color-border-subtle:var(--p-neutral-700);
+  --color-border-soft:#232325;
+  --color-border-strong:var(--p-neutral-500);
+  --p-signal-success:#3FBF8C;
+  --elevation-1:0 1px 2px rgba(0,0,0,.4);
+  --elevation-2:0 4px 16px rgba(0,0,0,.5);
+  --elevation-3:0 12px 40px rgba(0,0,0,.6);
+}
+
+/* ═══ BASE ═══ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:104px}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);
+  font-family:var(--p-font-text);font-size:var(--font-body-size);
+  line-height:var(--font-body-lh);letter-spacing:var(--font-body-ls);
+  font-weight:var(--p-weight-regular);font-synthesis:none;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;
+  transition:background var(--dur-slow) var(--ease-standard),color var(--dur-slow) var(--ease-standard)}
+::selection{background:var(--color-text-primary);color:var(--color-surface-page)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:none;box-shadow:var(--focus-ring);border-radius:var(--radius-xs)}
+h1,h2,h3,h4,p,figure,ul,ol,dl,table{margin:0}
+img{max-width:100%;display:block}
+
+/* padding-inline, never the shorthand: a section can also BE a .wrap, and
+   `padding:0 …` would zero the padding-block that gives it its rhythm —
+   silently, because a class outranks an element selector. */
+.wrap{max-width:var(--container-default);margin:0 auto;padding-inline:var(--gutter);width:100%}
+.wrap--wide{max-width:var(--container-wide)}
+.wrap--narrow{max-width:var(--container-narrow)}
+section{padding-block:var(--gap-section)}
+.sunken{background:var(--color-surface-sunken)}
+
+/* ═══ TYPOGRAPHY ═══ */
+.big{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);text-wrap:balance}
+.h-hero{font-weight:var(--p-weight-bold);font-size:var(--font-display-xl-size);
+  line-height:var(--font-display-xl-lh);letter-spacing:var(--font-display-xl-ls)}
+.h-sect{font-size:var(--font-display-m-size);line-height:var(--font-display-m-lh);
+  letter-spacing:var(--font-display-m-ls)}
+.h-sub{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-title-s-size);line-height:var(--font-title-s-lh);
+  letter-spacing:var(--font-title-s-ls)}
+.h-mid{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-title-l-size);line-height:var(--font-title-l-lh);
+  letter-spacing:var(--font-title-l-ls)}
+.lede{font-size:var(--font-lead-size);line-height:var(--font-lead-lh);
+  letter-spacing:var(--font-lead-ls);color:var(--color-text-secondary);max-width:52ch}
+.body{font-size:var(--font-body-size);line-height:var(--font-body-lh);
+  letter-spacing:var(--font-body-ls);color:var(--color-text-secondary)}
+.cap{font-size:var(--font-callout-size);line-height:var(--font-callout-lh);
+  letter-spacing:var(--font-callout-ls);color:var(--color-text-secondary)}
+.fine{font-size:var(--font-caption-size);line-height:1.5;color:var(--color-text-tertiary)}
+/* the label role — Geist Mono, uppercase, tracked, tabular figures */
+.lab{font-family:var(--p-font-mono);font-weight:500;font-size:var(--font-caption-size);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-tertiary);
+  font-variant-numeric:tabular-nums;display:block}
+.lab--accent{color:var(--color-text-link)}
+
+/* chapter opener */
+/* Same opener, same air, as the portfolio. */
+.chap{display:flex;align-items:baseline;gap:var(--space-4);margin-bottom:var(--gap-group)}
+.chap .rule{height:1px;flex:1;background:var(--color-border-subtle);align-self:center}
+
+/* ══ NAV · a floating capsule cluster, not a bar ══
+   Three objects centred at the top of the page: the menu, the mark, and
+   the one thing you might actually want to do. z-index 140 rather than 120
+   because .nav makes its own stacking context — the menu inside it can
+   never out-paint the scrim unless the whole header sits above it. */
+.nav{position:fixed;top:0;left:0;right:0;z-index:140;
+  padding-block:clamp(12px,2vh,20px);pointer-events:none;background:none;border:0}
+/* The bar is invisible, but it still obeys the 980px measure — so "Hire me"
+   lands exactly on the right rail every section below it lines up to,
+   rather than floating out at the viewport edge. */
+.nav-inner{max-width:var(--container-default);margin-inline:auto;
+  padding-inline:var(--gutter);display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;gap:var(--space-3)}
+.nav-inner>*{pointer-events:auto}
+.nav-cluster{grid-column:2;display:flex;align-items:center;gap:var(--space-1);position:relative}
+.nav-right{grid-column:3;justify-self:end;display:flex;align-items:center}
+
+/* the mark gets a capsule of its own — the logo is wide, so the pill is */
+.idpill{display:flex;align-items:center;justify-content:center;flex:none;
+  width:clamp(104px,12vw,132px);height:49px;padding:0;
+  border-radius:var(--radius-pill);
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  box-shadow:var(--elevation-1);
+  transition:border-color var(--dur-fast) var(--ease-standard)}
+.idpill:hover{border-color:var(--color-border-strong)}
+.idpill svg{width:52px;height:52px}
+/* on the narrowest phones the case-study bar carries four objects; the mark
+   is the one that can give up width without losing meaning */
+@media(max-width:420px){.idpill{width:82px}.idpill svg{width:46px;height:46px}}
+.navface{transition:opacity var(--dur-fast) var(--ease-standard)}
+
+/* resume — the one filled thing in the header, on the right rail */
+.nav-dl{display:flex;align-items:center;gap:9px;height:49px;padding:0 8px 0 18px;flex:none;
+  border-radius:var(--radius-pill);
+  background:var(--color-surface-page);color:var(--color-text-secondary);
+  border:1px solid var(--color-border-subtle);
+  font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-callout-size);letter-spacing:var(--font-callout-ls);
+  white-space:nowrap;transition:opacity var(--dur-fast) var(--ease-standard)}
+.nav-dl:hover{border-color:var(--color-border-strong);color:var(--color-text-primary)}
+.nav-dl i{width:33px;height:33px;flex:none;border-radius:var(--radius-pill);
+  background:var(--color-surface-fill);color:var(--color-text-secondary);
+  display:grid;place-items:center;font-style:normal;
+  transition:transform var(--dur-base) var(--ease-decel)}
+.nav-dl:hover i{transform:translateY(2px)}
+.menu a.dl{background:var(--color-surface-fill);color:var(--color-text-primary);margin-top:var(--space-2)}
+.menu a.dl em{color:var(--color-text-link)}
+/* below 860 it drops to the badge alone and becomes a circle like the rest */
+@media(max-width:860px){
+  .nav-dl{padding:7px;gap:0}
+  .nav-dl .dl-t{display:none}
+}
+
+/* ── contact · the hamburger's twin, that grows a word ──
+   Same capsule as the burger and the mark, so the cluster stays one
+   material. The pill is absolutely placed inside a fixed 49px slot, so it
+   unrolls rightward into the empty rail without nudging the mark. */
+.nav-cta{position:relative;width:49px;height:49px;flex:none;
+  padding:0;background:none;border:0;cursor:pointer}
+.cta-in{position:absolute;left:0;top:0;height:49px;display:flex;align-items:center;
+  padding:7px;border-radius:var(--radius-pill);white-space:nowrap;
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  box-shadow:var(--elevation-1);color:var(--color-text-primary);
+  font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-callout-size);letter-spacing:var(--font-callout-ls);
+  transition:border-color var(--dur-fast) var(--ease-standard)}
+.nav-cta:hover .cta-in,.nav-cta:focus-visible .cta-in{border-color:var(--color-border-strong)}
+.cta-ic{width:33px;height:33px;flex:none;display:grid;place-items:center}
+.cta-t{display:block;max-width:0;opacity:0;overflow:hidden;
+  transition:max-width 420ms var(--ease-decel),
+             padding 420ms var(--ease-decel),
+             opacity 240ms var(--ease-standard)}
+.nav-cta:hover .cta-t,.nav-cta:focus-visible .cta-t{max-width:9rem;opacity:1;padding:0 12px 0 6px}
+@media(hover:none){.cta-t{max-width:9rem;opacity:1;padding:0 12px 0 6px}}
+.cta-ic svg,.nav-dl i svg{width:16px;height:16px;fill:none;stroke:currentColor;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* hamburger — every chapter lives behind it */
+.burger{width:49px;height:49px;flex:none;border-radius:var(--radius-pill);
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  box-shadow:var(--elevation-1);
+  display:grid;place-items:center;position:relative;
+  transition:border-color var(--dur-fast) var(--ease-standard)}
+.burger:hover{border-color:var(--color-border-strong)}
+.burger i{position:absolute;left:16px;width:17px;height:1.5px;border-radius:2px;
+  background:var(--color-text-primary);
+  transition:transform var(--dur-base) var(--ease-decel),width var(--dur-base) var(--ease-decel)}
+.burger i:nth-child(1){transform:translateY(-4px)}
+.burger i:nth-child(2){transform:translateY(4px);width:11px}
+.burger[aria-expanded="true"] i:nth-child(1){transform:rotate(45deg)}
+.burger[aria-expanded="true"] i:nth-child(2){transform:rotate(-45deg);width:17px}
+
+/* the panel hangs off the burger */
+.menu{position:absolute;top:calc(100% + 9px);left:0;z-index:130;width:290px;padding:var(--space-2);
+  background:var(--color-surface-raised);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-xl);box-shadow:var(--elevation-3);
+  opacity:0;visibility:hidden;transform:translateY(-10px) scale(.96);transform-origin:top left;
+  transition:opacity var(--dur-fast) var(--ease-standard),transform var(--dur-base) var(--ease-decel),visibility var(--dur-base);
+  pointer-events:none}
+.menu.on{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.menu a{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);
+  height:48px;padding:0 15px;border-radius:var(--radius-md);
+  font-size:var(--font-body-size);letter-spacing:var(--font-body-ls);color:var(--color-text-secondary);
+  -webkit-tap-highlight-color:transparent;
+  transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)}
+.menu a:hover,.menu a:focus-visible{background:var(--color-surface-fill);color:var(--color-text-primary)}
+.menu a em{font-family:var(--p-font-mono);font-style:normal;font-weight:500;
+  font-size:var(--font-caption-size);letter-spacing:.11em;color:var(--color-text-tertiary);
+  font-variant-numeric:tabular-nums;transition:color var(--dur-fast) var(--ease-standard)}
+.menu a:hover em{color:var(--color-text-link)}
+@media(max-width:520px){.menu{width:min(292px,calc(100vw - 32px))}}
+
+/* the page dims a little, so the menu is clearly a layer */
+#scrim{position:fixed;inset:0;z-index:125;background:var(--color-text-primary);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-standard),visibility var(--dur-base)}
+#scrim.on{opacity:.14;visibility:visible}
+
+/* ── back · leftmost in the bar, so it is there the whole way down ── */
+.nav-left{grid-column:1;justify-self:start;display:flex;align-items:center}
+.nav .backbtn{height:49px;padding:0 20px 0 7px;gap:10px;box-shadow:var(--elevation-1)}
+.nav .backbtn i{width:35px;height:35px;font-size:16px}
+@media(max-width:860px){
+  .nav .backbtn{padding:7px;gap:0;font-size:0}
+  .nav .backbtn i{font-size:16px}
+}
+
+/* ── scroll progress · a ring that fills as you go ──
+   Doubles as back-to-top, so the corner holds one object rather than two.
+   The percentage only shows once you are actually into the page. */
+.progfab{position:fixed;right:22px;bottom:22px;z-index:95;
+  width:48px;height:48px;border-radius:var(--radius-pill);
+  display:grid;place-items:center;
+  background:var(--color-surface-page);border:0;
+  box-shadow:0 0 0 1px var(--color-border-subtle), var(--elevation-2);
+  color:var(--color-text-primary);
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity var(--dur-base) var(--ease-standard),
+             transform var(--dur-base) var(--ease-decel)}
+.progfab.on{opacity:1;transform:none;pointer-events:auto}
+.progfab svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.progfab circle{fill:none;stroke-width:2.5}
+.pf-track{stroke:var(--color-border-subtle)}
+.pf-bar{stroke:var(--color-action-primary-bg);stroke-linecap:round;
+  transition:stroke-dashoffset 120ms linear}
+.progfab i{font-style:normal;font-size:16px;line-height:1;
+  transition:opacity var(--dur-fast) var(--ease-standard)}
+.pf-n{position:absolute;font-family:var(--p-font-mono);font-weight:500;font-size:10px;
+  letter-spacing:.04em;font-variant-numeric:tabular-nums;opacity:0;
+  transition:opacity var(--dur-fast) var(--ease-standard)}
+.progfab:hover i{opacity:0}
+.progfab:hover .pf-n{opacity:1}
+@media(max-width:734px){.progfab{right:var(--gutter);bottom:var(--gutter)}}
+
+/* ══ HIRE ME · the brief, as a dialog ══ */
+#hireScrim{position:fixed;inset:0;z-index:200;background:var(--color-text-primary);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-standard),visibility var(--dur-base);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+#hireScrim.on{opacity:.42;visibility:visible}
+.dlg{position:fixed;z-index:210;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(16px,4vh,48px) clamp(16px,4vw,40px);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-standard),visibility var(--dur-base)}
+.dlg.on{opacity:1;visibility:visible}
+.dlg-card{width:min(720px,100%);max-height:100%;overflow:auto;position:relative;
+  background:var(--color-surface-page);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-xl);padding:clamp(24px,4vw,44px);box-shadow:var(--elevation-3);
+  transform:translateY(22px) scale(.97);transition:transform var(--dur-slow) var(--ease-decel)}
+.dlg.on .dlg-card{transform:none}
+.dlg h2{font-size:var(--font-display-s-size);line-height:var(--font-display-s-lh);
+  letter-spacing:var(--font-display-s-ls);max-width:19ch}
+.dlg h2 em{font-style:normal;color:var(--color-text-link)}
+.dlg .sub{font-size:var(--font-lead-size);line-height:var(--font-lead-lh);
+  letter-spacing:var(--font-lead-ls);color:var(--color-text-secondary);
+  margin-top:var(--space-4);max-width:46ch}
+.dlg-x{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:var(--radius-pill);
+  background:var(--color-surface-fill);border:0;display:grid;place-items:center;
+  font-size:17px;color:var(--color-text-secondary);
+  transition:background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard),
+             transform var(--dur-base) var(--ease-decel)}
+.dlg-x:hover{background:var(--color-border-subtle);color:var(--color-text-primary);transform:rotate(90deg)}
+
+.hrow{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-top:var(--space-3)}
+@media(max-width:560px){.hrow{grid-template-columns:1fr}}
+.fld{position:relative;display:block}
+.fld input,.fld textarea{width:100%;font:inherit;
+  font-size:var(--font-body-size);letter-spacing:var(--font-body-ls);color:var(--color-text-primary);
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  border-radius:var(--radius-md);padding:18px 20px;outline:0;
+  transition:border-color var(--dur-fast) var(--ease-standard),background var(--dur-fast) var(--ease-standard)}
+.fld textarea{min-height:132px;resize:vertical;line-height:1.5;display:block}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--color-text-tertiary)}
+.fld input:focus,.fld textarea:focus{border-color:var(--color-border-focus);background:var(--color-surface-page)}
+.fld.bad input,.fld.bad textarea{border-color:var(--p-signal-critical)}
+.fld .msg:not(:empty){display:block;font-size:var(--font-callout-size);
+  letter-spacing:var(--font-callout-ls);color:var(--p-signal-critical);padding:7px 4px 0}
+.send{width:100%;height:56px;margin-top:var(--space-4);border-radius:var(--radius-pill);
+  background:var(--color-action-primary-bg);color:var(--color-action-primary-text);
+  font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-body-size);letter-spacing:var(--font-body-ls);
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  transition:background var(--dur-fast) var(--ease-standard)}
+.send:hover{background:var(--color-action-primary-bg-hover)}
+.send span{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:var(--radius-pill);
+  background:rgba(255,255,255,.22);font-size:13px;
+  transition:transform var(--dur-base) var(--ease-decel)}
+.send:hover span{transform:rotate(45deg)}
+.dlg .fine{font-family:var(--p-font-mono);font-weight:500;font-size:var(--font-caption-size);
+  letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-tertiary);
+  text-align:center;margin-top:var(--space-4)}
+.dlg .fine a{color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-subtle)}
+.dlg .fine a:hover{color:var(--color-text-primary)}
+/* the thank-you takes over the same card */
+#hireDone{display:none;text-align:center;padding:var(--space-5) 0}
+#hireDone.on{display:block}
+#hireDone .mk{font-family:var(--p-font-mono);font-size:22px;letter-spacing:.34em;
+  color:var(--p-signal-success);margin:var(--space-6) 0 var(--space-1)}
+#hireForm.off{display:none}
+
+/* the mark is static here — no face engine on a case study page */
+.idpill svg{width:52px;height:52px;color:var(--color-text-primary)}
+
+/* ── alternating rows, images off the edge ──
+   Copy keeps the 980px measure; the screen runs past it to the viewport
+   edge and is cut off there. No mat, no frame — the screenshot is the
+   object rather than something mounted inside one. The bleeding side drops
+   its corner radius so the crop reads as intent, not as clipping. */
+.alt{display:grid;grid-template-columns:minmax(0,.40fr) minmax(0,.60fr);
+  gap:clamp(24px,4vw,64px);align-items:center;margin-top:var(--gap-block)}
+.alt-copy{display:flex;flex-direction:column;gap:var(--gap-block)}
+.alt-media img{width:100%;height:auto;display:block}
+.alt .alt-media{margin-right:calc(-1 * ((100vw - min(100vw, var(--container-default))) / 2 + var(--gutter)))}
+.alt .alt-media img{border-radius:var(--radius-lg) 0 0 var(--radius-lg)}
+.alt--rev{grid-template-columns:minmax(0,.60fr) minmax(0,.40fr)}
+.alt--rev .alt-media{margin-right:0;
+  margin-left:calc(-1 * ((100vw - min(100vw, var(--container-default))) / 2 + var(--gutter)))}
+.alt--rev .alt-media img{border-radius:0 var(--radius-lg) var(--radius-lg) 0}
+@media(max-width:860px){
+  .alt,.alt--rev{grid-template-columns:1fr;gap:var(--gap-group)}
+  .alt .alt-media,.alt--rev .alt-media{margin-inline:calc(var(--gutter) * -1)}
+  .alt .alt-media img,.alt--rev .alt-media img{border-radius:0}
+  .alt--rev .alt-copy{order:-1}
+}
+/* one accent word per heading, the way the reference paces it */
+.h-sect em,.h-mid em{font-style:normal;color:var(--color-text-link)}
+
+/* ── the banner ──
+   Runs the full viewport width above the title. 100vw with a negative
+   half-viewport pull escapes the container without needing the parent to
+   know about it; 50svh rather than 50vh so a mobile browser's collapsing
+   toolbar cannot make it jump mid-scroll. The nav floats over it. */
+.hero-banner{position:relative;width:100vw;margin-left:calc(50% - 50vw);
+  height:50svh;min-height:280px;max-height:620px;overflow:hidden}
+.hero-banner img{width:100%;height:100%;object-fit:cover;object-position:center;
+  display:block;border:0;border-radius:0;box-shadow:none}
+
+/* ── screens sit on the page, not in a frame ──
+   No mat, no hairline. Depth comes from a shadow cast underneath, weighted
+   downward so the screen reads as lifted off the page rather than outlined
+   on it. The bleeding rows lose the shadow on the cut side, where it would
+   only smear against the viewport edge. */
+.shot{background:none;padding:0;border-radius:0;overflow:visible}
+.shot img,.alt-media img{border:0;
+  box-shadow:0 26px 50px -14px rgba(16,20,32,.24), 0 10px 20px -10px rgba(16,20,32,.14)}
+.shot img{border-radius:var(--radius-lg)}
+html[data-theme="dark"] .shot img,
+html[data-theme="dark"] .alt-media img{
+  box-shadow:0 26px 54px -14px rgba(0,0,0,.7), 0 10px 20px -10px rgba(0,0,0,.5)}
+
+/* ── the old frame, kept only for anything still using a mat ──
+   A real screen on a white page needs a surround, or it dissolves into the
+   background. Sunken mat, hairline on the image itself, radius on both. */
+.shot{background:var(--color-surface-sunken);border-radius:var(--radius-2xl);
+  padding:clamp(14px,2.6vw,38px);overflow:hidden}
+.g2 .shot{border-radius:var(--radius-xl);padding:clamp(10px,1.6vw,20px)}
+.shot img{width:100%;height:auto;display:block;border-radius:var(--radius-md);
+  border:1px solid var(--color-border-subtle)}
+
+/* ── back · built to be found, not deciphered ──
+   Mirrors the Hire me button so it reads as a control, with the arrow badge
+   on the left where a back action belongs. */
+.backbtn{display:inline-flex;align-items:center;gap:11px;height:46px;padding:0 22px 0 8px;
+  border-radius:var(--radius-pill);background:var(--color-surface-sunken);
+  border:1px solid var(--color-border-subtle);box-shadow:var(--elevation-1);
+  font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-callout-size);letter-spacing:var(--font-callout-ls);
+  color:var(--color-text-primary);white-space:nowrap;
+  transition:border-color var(--dur-fast) var(--ease-standard)}
+.backbtn:hover{border-color:var(--color-border-strong)}
+.backbtn i{width:30px;height:30px;flex:none;border-radius:var(--radius-pill);
+  background:var(--color-action-primary-bg);color:var(--color-action-primary-text);
+  display:grid;place-items:center;font-style:normal;font-size:15px;line-height:1;
+  transition:transform var(--dur-base) var(--ease-decel)}
+.backbtn:hover i{transform:translateX(-3px)}
+.menu a.back{background:var(--color-surface-fill);color:var(--color-text-primary);
+  margin-bottom:var(--space-2)}
+.menu a.back em{color:var(--color-text-link)}
+
+/* ═══ HERO ═══ */
+.hero{padding-block:var(--gap-section);text-align:center}
+.hero h1{max-width:16ch;margin-inline:auto}
+.hero .lede{margin:var(--space-6) auto 0;max-width:60ch}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:var(--space-6);margin-top:var(--gap-block);text-align:left;
+  border-top:1px solid var(--color-border-subtle);padding-top:var(--space-7)}
+.meta div span{display:block}
+.meta .v{font-size:var(--font-body-size);color:var(--color-text-primary);margin-top:var(--space-2)}
+
+/* ═══ STATS ═══ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0}
+.stat{padding:var(--space-5) var(--space-7);border-left:1px solid var(--color-border-subtle)}
+.stat:first-child{border-left:0;padding-left:0}
+.stat b{display:block;font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-display-s-size);line-height:1.04;letter-spacing:var(--font-display-s-ls);
+  font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:var(--space-2);font-size:var(--font-callout-size);
+  letter-spacing:var(--font-callout-ls);color:var(--color-text-secondary)}
+@media(max-width:734px){
+  .stat{border-left:0;border-top:1px solid var(--color-border-subtle);padding-inline:0}
+  .stat:first-child{border-top:0}
+}
+
+/* ═══ IMAGE SLOTS ═══
+   Every one of these is a real slot with a brief attached, not grey filler.
+   Drop an <img> inside and delete the note; the aspect ratio holds. */
+.media{position:relative;display:grid;place-items:center;overflow:hidden;
+  border-radius:var(--radius-xl);background:var(--color-surface-sunken);
+  border:1px dashed var(--color-border-strong);aspect-ratio:16/9;
+  padding:var(--space-8);text-align:center}
+.media--feature{aspect-ratio:21/9;border-radius:var(--radius-2xl)}
+.media--tall{aspect-ratio:4/3}
+.media--square{aspect-ratio:1/1}
+.media img{width:100%;height:100%;object-fit:cover}
+.media__note{display:flex;flex-direction:column;gap:var(--space-2);max-width:46ch}
+.media__k{font-family:var(--p-font-mono);font-weight:500;font-size:var(--font-caption-size);
+  letter-spacing:.14em;text-transform:uppercase;color:var(--color-text-link)}
+.media__t{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-title-s-size);letter-spacing:var(--font-title-s-ls);
+  color:var(--color-text-primary)}
+.media__d{font-size:var(--font-callout-size);line-height:var(--font-callout-lh);
+  letter-spacing:var(--font-callout-ls);color:var(--color-text-secondary)}
+.media__spec{font-family:var(--p-font-mono);font-size:var(--font-caption-size);
+  letter-spacing:.08em;color:var(--color-text-tertiary);margin-top:var(--space-1)}
+figcaption{margin-top:var(--space-3);font-size:var(--font-caption-size);
+  color:var(--color-text-tertiary);text-align:center}
+
+/* the ecosystem reads top-down, so each tier gets its own band of space */
+.tier + .tier{margin-top:var(--gap-block)}
+
+/* ═══ CARDS ═══ no hover, depth from tone and radius ═══ */
+.card{background:var(--color-surface-sunken);border-radius:var(--radius-xl);
+  padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-3)}
+.card--accent{background:var(--color-surface-accent-subtle)}
+.card--outline{background:transparent;border:1px solid var(--color-border-subtle)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-6)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-6)}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:var(--space-6)}
+@media(max-width:900px){.g3{grid-template-columns:1fr}}
+@media(max-width:734px){.g2{grid-template-columns:1fr}}
+
+/* numbered items */
+.num{display:grid;grid-template-columns:auto 1fr;gap:var(--space-5);
+  padding:var(--space-6) 0;border-top:1px solid var(--color-border-subtle)}
+.num .n{font-family:var(--p-font-mono);font-weight:500;font-size:var(--font-caption-size);
+  letter-spacing:.1em;color:var(--color-text-tertiary);padding-top:5px;
+  font-variant-numeric:tabular-nums}
+
+/* ═══ TABLE ═══ */
+.tbl{width:100%;border-collapse:collapse;text-align:left}
+.tbl th{font-family:var(--p-font-mono);font-weight:500;font-size:var(--font-caption-size);
+  letter-spacing:.11em;text-transform:uppercase;color:var(--color-text-tertiary);
+  padding:0 var(--space-5) var(--space-3) 0;border-bottom:1px solid var(--color-border-strong);
+  vertical-align:bottom}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td{padding:var(--space-5) var(--space-5) var(--space-5) 0;
+  border-bottom:1px solid var(--color-border-subtle);vertical-align:top;
+  font-size:var(--font-callout-size);line-height:var(--font-callout-lh);
+  letter-spacing:var(--font-callout-ls);color:var(--color-text-secondary)}
+.tbl td:first-child{color:var(--color-text-primary);font-weight:500;white-space:nowrap}
+.tbl td b{display:block;color:var(--color-text-primary);font-weight:500}
+@media(max-width:734px){
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl thead{display:none}
+  .tbl tr{padding:var(--space-5) 0;border-bottom:1px solid var(--color-border-subtle)}
+  .tbl td{border:0;padding:0 0 var(--space-2)}
+  .tbl td::before{content:attr(data-l);display:block;font-family:var(--p-font-mono);
+    font-size:var(--font-caption-size);letter-spacing:.11em;text-transform:uppercase;
+    color:var(--color-text-tertiary);margin-bottom:2px}
+}
+
+/* ═══ FLOW PATHS ═══ */
+.path{list-style:none;padding:0;margin:var(--space-5) 0 0;display:flex;flex-direction:column}
+.path li{position:relative;padding:var(--space-3) 0 var(--space-3) var(--space-7);
+  font-size:var(--font-callout-size);line-height:var(--font-callout-lh);
+  letter-spacing:var(--font-callout-ls);color:var(--color-text-secondary)}
+.path li::before{content:"";position:absolute;left:7px;top:22px;bottom:-6px;width:1px;
+  background:var(--color-border-subtle)}
+.path li:last-child::before{display:none}
+.path li::after{content:"";position:absolute;left:3px;top:18px;width:9px;height:9px;
+  border-radius:var(--radius-pill);background:var(--color-border-strong)}
+.path li:last-child{color:var(--color-text-primary);font-weight:500}
+.path li:last-child::after{background:var(--color-action-primary-bg)}
+
+/* ═══ QUOTES ═══ */
+.qcard{background:var(--color-surface-sunken);border-radius:var(--radius-xl);
+  padding:var(--space-8);display:flex;flex-direction:column;gap:var(--space-4)}
+.stars{color:var(--p-signal-curious);letter-spacing:.14em;font-size:14px}
+.qcard p{font-size:var(--font-body-size);line-height:var(--font-body-lh);
+  letter-spacing:var(--font-body-ls);color:var(--color-text-primary);flex:1}
+.who{display:flex;align-items:center;gap:var(--space-3)}
+.who i{width:38px;height:38px;border-radius:var(--radius-pill);flex:none;
+  background:var(--color-surface-accent-tint);color:var(--color-text-link);
+  display:grid;place-items:center;font-style:normal;font-weight:600;font-size:13px}
+.who b{display:block;font-weight:500;font-size:var(--font-callout-size);
+  color:var(--color-text-primary)}
+.who span{display:block;font-size:var(--font-caption-size);color:var(--color-text-tertiary)}
+
+/* ═══ CALLOUT ═══ */
+.callout{border-left:3px solid var(--color-action-primary-bg);
+  padding:var(--space-2) 0 var(--space-2) var(--space-6);max-width:62ch}
+
+/* ═══ RESULTS · the one inverse band on the page ═══
+   Everything else alternates white and a 4% tint. This section inverts, so
+   the numbers land as the loudest thing here without needing to be bigger
+   than the headline that introduces them. */
+.results-band{background:var(--color-surface-inverse);color:var(--color-text-inverse)}
+.results-band .lab{color:var(--p-neutral-400)}
+.results-band .lab--accent{color:var(--p-accent-400)}
+.results-band .chap .rule{background:var(--p-neutral-700)}
+.results-band .big{color:var(--color-text-inverse)}
+.results-band .lede,.results-band .fine{color:var(--p-neutral-400)}
+.results-band .card{background:rgba(255,255,255,.05)}
+.results-band .path li{color:var(--p-neutral-400)}
+.results-band .path li::before{background:var(--p-neutral-700)}
+.results-band .path li::after{background:var(--p-neutral-500)}
+.results-band .path li:last-child{color:var(--color-text-inverse)}
+.results-band .path li:last-child::after{background:var(--p-accent-400)}
+/* the headline numbers — bigger, tighter, and split by hairlines */
+.results-band .stat{border-left-color:var(--p-neutral-700)}
+
+/* ── Keep reading · the other case studies, then one way to get in touch ──
+   Two columns on desktop, stacked below 734px. Static like every other card
+   on the site — the cursor carries the affordance, not a hover state. */
+.next{padding-block:var(--gap-section)}
+.ncards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--space-5);margin-top:var(--gap-group)}
+.ncard{display:flex;flex-direction:column;gap:var(--space-3);
+  padding:var(--space-4);border-radius:var(--radius-lg);
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  text-decoration:none;color:inherit;cursor:pointer}
+.ncard-th{aspect-ratio:16/9;border-radius:var(--radius-md);overflow:hidden;
+  background:var(--color-surface-fill)}
+.ncard-th img{width:100%;height:100%;object-fit:cover;display:block}
+.ncard-who{font-family:var(--p-font-mono);font-size:var(--font-caption-size);
+  letter-spacing:.06em;color:var(--color-text-tertiary)}
+.ncard-t{margin:0;font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-title-s-size);line-height:1.15;
+  letter-spacing:var(--font-title-s-ls);color:var(--color-text-primary)}
+.ncard-r{font-size:var(--font-callout-size);color:var(--color-text-secondary)}
+.ncard--all{justify-content:center;align-items:flex-start;gap:var(--space-2)}
+.ncard--all .ncard-t i{font-style:normal;color:var(--color-text-link)}
+.contact{margin-top:var(--gap-block);padding-top:var(--gap-group);
+  border-top:1px solid var(--color-border-subtle);
+  display:flex;flex-wrap:wrap;align-items:baseline;
+  justify-content:space-between;gap:var(--space-5)}
+.contact h2{margin:0;font-family:var(--p-font-display);
+  font-weight:var(--p-weight-semibold);font-size:var(--font-title-m-size);
+  letter-spacing:var(--font-title-m-ls);color:var(--color-text-primary)}
+.contact-links{display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-5);align-items:center}
+@media(max-width:734px){
+  .ncards{grid-template-columns:minmax(0,1fr)}
+  .contact{flex-direction:column;align-items:flex-start}
+}
+.results-band .stat b{font-size:var(--font-display-l-size);line-height:1;
+  letter-spacing:var(--font-display-l-ls);color:var(--color-text-inverse)}
+.results-band .stat span{color:var(--p-neutral-400)}
+@media(max-width:734px){
+  .results-band .stat{border-top-color:var(--p-neutral-700)}
+}
+
+/* ═══ FOOTER ═══ */
+.foot{border-top:1px solid var(--color-border-subtle);padding:var(--gap-block) 0}
+.foot-row{display:flex;gap:var(--space-6);flex-wrap:wrap;align-items:baseline}
+.mailto{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);
+  font-size:var(--font-title-l-size);letter-spacing:var(--font-title-l-ls);
+  border-bottom:2px solid var(--color-border-subtle);padding-bottom:var(--space-1);
+  transition:color var(--dur-fast) var(--ease-standard),border-color var(--dur-fast) var(--ease-standard)}
+.mailto:hover{color:var(--color-text-link);border-color:var(--color-text-link)}
+
+/* ═══ REVEAL ═══ */
+.rise{opacity:0;transform:translateY(28px);
+  transition:opacity var(--dur-reveal) var(--ease-decel),transform var(--dur-reveal) var(--ease-decel)}
+.rise.in{opacity:1;transform:none}
+
+#toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);z-index:230;
+  background:var(--color-surface-inverse);color:var(--color-text-inverse);border-radius:var(--radius-pill);
+  padding:var(--space-3) var(--space-6);font-family:var(--p-font-mono);font-weight:500;
+  font-size:var(--font-caption-size);letter-spacing:.09em;text-transform:uppercase;
+  opacity:0;pointer-events:none;
+  transition:opacity var(--dur-base) var(--ease-standard),transform var(--dur-base) var(--ease-decel)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.theme-toggle{position:fixed;right:22px;bottom:82px;z-index:90;width:48px;height:48px;
+  border-radius:var(--radius-pill);background:var(--color-surface-page);border:0;
+  box-shadow:0 0 0 1px var(--color-border-subtle), var(--elevation-2);
+  display:grid;place-items:center;font-size:15px;color:var(--color-text-secondary)}
+@media(max-width:734px){:root{--gutter:20px}}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE · nothing touches the edge
+   A 20px gutter is the floor at every width. Anything that escapes .wrap —
+   the wide container, the menu, the dialog, the mascot — is pulled back to it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media(max-width:734px){
+  :root{--gutter:20px}
+  .wrap,.wrap--wide,.wrap--narrow{max-width:100%;padding-inline:var(--gutter)}
+  .nav-inner{padding-inline:var(--gutter)}
+
+  .menu{width:calc(100vw - (var(--gutter) * 2));left:0}
+  .dlg{padding:24px var(--gutter)}
+  .dlg-card{border-radius:var(--radius-lg)}
+  #companion{right:var(--gutter)}
+  #toast{left:var(--gutter);right:var(--gutter);transform:translateY(20px);
+    width:auto;text-align:center}
+  #toast.on{transform:none}
+  .theme-toggle{right:var(--gutter)}
+  /* 40px of card padding inside a 20px gutter leaves very little middle */
+  .card,.qcard,.lc,.toy{padding:var(--space-6)}
+  .proj.proj--featured{padding:var(--space-7) var(--space-5)}
+  .rig-top,.rig-foot,.rig-stage{padding-inline:var(--space-5)}
+  .shot{padding:var(--space-3);border-radius:var(--radius-lg)}
+  .g2 .shot{padding:var(--space-3)}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <a class="backbtn" href="index.html#work"><i aria-hidden="true">←</i> Back</a>
+    </div>
+
+    <div class="nav-cluster">
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <i></i><i></i>
+      </button>
+
+      <a class="idpill" id="mark" href="index.html" aria-label="Rajat Sharma — home">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="24" cy="50" r="7.5" fill="currentColor"/>
+        <rect x="38" y="42.5" width="24" height="15" rx="7.5" fill="currentColor"/>
+        <circle cx="76" cy="50" r="7.5" fill="currentColor"/>
+      </svg>
+      </a>
+
+      <button class="nav-cta" id="hireBtn" aria-haspopup="dialog" aria-controls="hire" aria-label="Contact me">
+        <span class="cta-in"><span class="cta-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.6"/><path d="m3.6 7.6 8.4 5.9 8.4-5.9"/></svg></span><span class="cta-t">Contact me</span></span>
+      </button>
+
+      <nav class="menu" id="menu" aria-label="Chapters">
+        <a class="back" href="index.html#work"><em>←</em>Back to selected work</a>
+        <a href="index.html#philosophy">Why I design<em>02</em></a>
+        <a href="index.html#work">Selected work<em>03</em></a>
+        <a href="index.html#think">How I think<em>04</em></a>
+        <a href="index.html#principles">Principles<em>05</em></a>
+        <a href="index.html#play">Playground<em>06</em></a>
+        <a href="index.html#about">About me<em>07</em></a>
+        <a class="dl" href="assets/rajat-sharma-resume.pdf" target="_blank" rel="noopener">Resume<em>↓</em></a>
+      </nav>
+    </div>
+
+    <div class="nav-right">
+      <a class="nav-dl" href="assets/rajat-sharma-resume.pdf" target="_blank" rel="noopener">
+        <span class="dl-t">Resume</span> <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.2-4.2M12 14.5 7.8 10.3"/><path d="M4.5 19.5h15"/></svg></i>
+      </a>
+    </div>
+  </div>
+</header>
+<div id="scrim"></div>
+
+<!-- ══ HIRE ME · the brief ════════════════════════════════ -->
+<div id="hireScrim"></div>
+<div class="dlg" id="hire" role="dialog" aria-modal="true" aria-labelledby="hire-h">
+  <div class="dlg-card">
+    <button class="dlg-x" id="hireX" aria-label="Close">✕</button>
+
+    <div id="hireForm">
+      <h2 id="hire-h" class="big">Let's build something great <em>together</em>.</h2>
+      <p class="sub">Two fields are required. Send me the messy version — polish is my job, not yours.</p>
+
+      <form id="hireBrief" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <input type="hidden" name="access_key" value="ee9d0b70-a043-4f2b-83c9-fec4a6095b2b">
+        <input type="hidden" name="subject" value="New enquiry from rajatsharma.design">
+        <input type="hidden" name="from_name" value="Portfolio contact form">
+        <!-- honeypot: a bot fills this, a person never sees it -->
+        <input type="checkbox" name="botcheck" tabindex="-1" aria-hidden="true"
+               style="display:none!important">
+        <div class="hrow">
+          <label class="fld"><input id="hName" name="name" type="text" placeholder="Name" autocomplete="name">
+            <span class="msg"></span></label>
+          <label class="fld"><input id="hCo" name="company" type="text" placeholder="Company (optional)" autocomplete="organization">
+            <span class="msg"></span></label>
+        </div>
+        <div class="hrow">
+          <label class="fld"><input id="hMail" name="email" type="email" placeholder="E-mail" autocomplete="email">
+            <span class="msg"></span></label>
+          <label class="fld"><input id="hPhone" name="phone" type="tel" placeholder="Phone (optional)" autocomplete="tel">
+            <span class="msg"></span></label>
+        </div>
+        <div class="hrow" style="grid-template-columns:1fr">
+          <label class="fld"><textarea id="hIdea" name="message" placeholder="What's your idea? Explain it however it comes out."></textarea>
+            <span class="msg"></span></label>
+        </div>
+        <button class="send" type="submit">Send a request <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="fine">Goes straight to my inbox · or write to
+        <a href="mailto:rajatsharmajaipur100@gmail.com">rajatsharmajaipur100@gmail.com</a></p>
+    </div>
+
+    <div id="hireDone">
+      <h2 class="big">Got it. <em>Talk soon.</em></h2>
+      <p class="sub" style="margin-left:auto;margin-right:auto">Your note is with me. I'll come back with questions before I come back with opinions.</p>
+      <div class="mk">· — ·</div>
+      <p class="fine">rajatsharmajaipur100@gmail.com</p>
+    </div>
+  </div>
+</div>
+
+
+<main id="top">
+
+<!-- ══ BANNER · full-bleed, half the viewport ════════════ -->
+<figure class="hero-banner">
+  <picture>
+    <source srcset="assets/bay-management.webp" type="image/webp">
+    <img src="assets/bay-management.jpg" width="1600" height="1067" fetchpriority="high" decoding="async"
+         alt="The Garage Management System on a tablet held in two hands: station status, opening cash, a Close Day action, and today's performance tiles.">
+  </picture>
+</figure>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap">
+    <p class="lab lab--accent">Operations platform case study</p>
+    <h1 class="big h-hero" style="margin-top:var(--space-4)">We rebuilt how service stations operate</h1>
+    <p class="lede">Legacy tools forced every team onto a different system. Service, inventory and finance each held part of the truth, and nobody held all of it. The Garage Management System put the job card at the centre and built the workshop around it.</p>
+
+    <div class="meta">
+      <div><span class="lab">Role</span><span class="v">Product design, end to end</span></div>
+      <div><span class="lab">Client</span><span class="v">Petromin Express</span></div>
+      <div><span class="lab">Market</span><span class="v">Saudi Arabia</span></div>
+      <div><span class="lab">Platform</span><span class="v">Tablet &amp; web</span></div>
+      <div><span class="lab">Timeline</span><span class="v">24 weeks</span></div>
+      <div><span class="lab">Languages</span><span class="v">Arabic &amp; English · RTL and LTR</span></div>
+      <div><span class="lab">Read</span><span class="v">7 min</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ PROBLEM ═══════════════════════════════════════════ -->
+<section class="sunken" id="problem">
+  <div class="wrap">
+    <div class="chap"><span class="lab">The problem</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Disconnected systems slowed every part of workshop operations</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Legacy tools forced teams to work across multiple systems, creating delays, duplicate work, and limited operational visibility.</p>
+  </div>
+</section>
+
+<!-- ══ DISCOVERY ═════════════════════════════════════════ -->
+<section id="discovery">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Discovery</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Understanding the business</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">To understand the daily challenges, we observed workshop operations, interviewed teams across departments, and mapped how work moved from vehicle check-in to billing.</p>
+
+    <div class="g3 rise" style="margin-top:var(--gap-block)">
+      <div class="card"><span class="lab">01</span><h3 class="h-sub">Interviewed the people running it</h3><p class="cap">Station, finance and area managers, across roles and across sites.</p></div>
+      <div class="card"><span class="lab">02</span><h3 class="h-sub">Reviewed existing workflows</h3><p class="cap">How a vehicle actually moved through a workshop, step by step.</p></div>
+      <div class="card"><span class="lab">03</span><h3 class="h-sub">Mapped the dependencies</h3><p class="cap">System integrations and approval chains, and where each one stalled.</p></div>
+    </div>
+
+    <div class="stats rise" style="margin-top:var(--gap-block)">
+      <div class="stat"><b data-count="24" data-suffix="">0</b><span>Weeks of continuous discovery and design</span></div>
+      <div class="stat"><b data-count="34" data-suffix="">0</b><span>Stakeholders across operations, finance, IT and leadership</span></div>
+      <div class="stat"><b data-count="8" data-suffix="">0</b><span>Roles mapped for responsibilities and handoffs</span></div>
+    </div>
+    <div class="stats rise" style="margin-top:var(--gap-group)">
+      <div class="stat"><b data-count="36" data-suffix="">0</b><span>Functional requirements defined</span></div>
+      <div class="stat"><b data-count="10" data-suffix="+">0</b><span>System integrations analysed</span></div>
+      <div class="stat"><b data-count="6" data-suffix="">0</b><span>Core modules designed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINDINGS ══════════════════════════════════════════ -->
+<section class="sunken" id="findings">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Findings</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Where the legacy system failed</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Six issues recurred at every station we visited.</p>
+
+    <div class="rise" style="margin-top:var(--gap-block)">
+      <div class="num"><span class="n">01</span><div><h3 class="h-sub">Teams worked across disconnected systems</h3><p class="body" style="margin-top:var(--space-2)">Service, inventory and finance operated independently, requiring manual coordination.</p></div></div>
+      <div class="num"><span class="n">02</span><div><h3 class="h-sub">Approvals slowed daily operations</h3><p class="body" style="margin-top:var(--space-2)">Routine approvals delayed work, especially during busy hours.</p></div></div>
+      <div class="num"><span class="n">03</span><div><h3 class="h-sub">Managers lacked real-time visibility</h3><p class="body" style="margin-top:var(--space-2)">Operational updates were only available after work had already progressed.</p></div></div>
+      <div class="num"><span class="n">04</span><div><h3 class="h-sub">Technicians switched between tools</h3><p class="body" style="margin-top:var(--space-2)">Essential information was spread across multiple systems, interrupting servicing.</p></div></div>
+      <div class="num"><span class="n">05</span><div><h3 class="h-sub">Inventory records were out of sync</h3><p class="body" style="margin-top:var(--space-2)">Parts usage and job cards required manual reconciliation.</p></div></div>
+      <div class="num" style="border-bottom:1px solid var(--color-border-subtle)"><span class="n">06</span><div><h3 class="h-sub">Peak hours bottlenecked</h3><p class="body" style="margin-top:var(--space-2)">Approval queues and manual processes slowed workshop throughput.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VOICES ════════════════════════════════════════════ -->
+<section id="voices">
+  <div class="wrap">
+    <div class="chap"><span class="lab">What teams told us</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Five people, one problem, five descriptions of it</h2>
+
+    <div class="g2 rise" style="margin-top:var(--gap-block)">
+      <div class="qcard"><p>"I manually compare records across different systems every day. When something doesn't match, I have no way to know which one is correct."</p><div class="who"><i>SM</i><div><b>Station Manager</b><span>Daily reconciliation</span></div></div></div>
+      <div class="qcard"><p>"Every vehicle requires checking another system. Switching back and forth slows me down and increases mistakes."</p><div class="who"><i>ST</i><div><b>Senior Technician</b><span>On the floor</span></div></div></div>
+      <div class="qcard"><p>"I oversee 12 stations, but I only learn about problems after they've already happened."</p><div class="who"><i>AM</i><div><b>Area Manager</b><span>Multi-site oversight</span></div></div></div>
+      <div class="qcard"><p>"Reconciling invoices with ZATCA is manual, and mismatches are often discovered days later."</p><div class="who"><i>FL</i><div><b>Finance Lead</b><span>Compliance and billing</span></div></div></div>
+      <div class="qcard"><p>"Employee information exists in multiple systems, so we maintain the same data twice."</p><div class="who"><i>IT</i><div><b>IT Manager</b><span>Systems and data</span></div></div></div>
+      <div class="card card--accent"><span class="lab lab--accent">The pattern</span><p class="body" style="color:var(--color-text-primary)">Every role described the same fracture from a different side of it. Nobody was missing information — it existed. It just never arrived in one place, in time to act on.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ECOSYSTEM ═════════════════════════════════════════ -->
+<section class="sunken" id="ecosystem">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Product ecosystem</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">A multi-role operational hierarchy</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Designed as a connected hierarchy supporting multiple teams, workflows and responsibilities across workshop operations.</p>
+
+    <div class="rise" style="margin-top:var(--gap-block)">
+      <div class="tier">
+        <span class="lab lab--accent">Oversight</span>
+        <div class="g2" style="margin-top:var(--space-4)">
+          <div class="card"><h3 class="h-sub">Area managers &amp; auditors</h3><p class="cap">Operational oversight, reporting, compliance monitoring.</p></div>
+        </div>
+      </div>
+      <div class="tier">
+        <span class="lab lab--accent">Coordination</span>
+        <div class="g2" style="margin-top:var(--space-4)">
+          <div class="card"><h3 class="h-sub">Station managers</h3><p class="cap">Operational monitoring, bay management, workflow visibility.</p></div>
+          <div class="card"><h3 class="h-sub">Service advisors</h3><p class="cap">Vehicle check-in, customer coordination, approvals.</p></div>
+        </div>
+      </div>
+      <div class="tier">
+        <span class="lab lab--accent">Execution</span>
+        <div class="g3" style="margin-top:var(--space-4)">
+          <div class="card"><h3 class="h-sub">Technicians</h3><p class="cap">Service execution, inspections, diagnostics, workflow updates.</p></div>
+          <div class="card"><h3 class="h-sub">Inventory teams</h3><p class="cap">Stock tracking, parts requests, inventory transfers.</p></div>
+          <div class="card"><h3 class="h-sub">Finance teams</h3><p class="cap">Invoices, payments, reconciliation, refunds.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRINCIPLES ════════════════════════════════════════ -->
+<section id="principles">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Design principles</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Designing for operational speed and clarity</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Five foundational decisions that guided every design and interaction across the platform.</p>
+
+    <div class="g3 rise" style="margin-top:var(--gap-block)">
+      <div class="card"><span class="lab">Principle 01</span><h3 class="h-sub">Workflow-first UX</h3><p class="cap">Interfaces were designed around operational states and guided workflows instead of traditional page-based navigation.</p></div>
+      <div class="card"><span class="lab">Principle 02</span><h3 class="h-sub">Low cognitive load</h3><p class="cap">The experience minimised unnecessary interactions to support fast-paced workshop environments.</p></div>
+      <div class="card"><span class="lab">Principle 03</span><h3 class="h-sub">Scan-first interactions</h3><p class="cap">VIN or plate scanning, quick actions and contextual inputs reduced manual entry effort and errors.</p></div>
+      <div class="card"><span class="lab">Principle 04</span><h3 class="h-sub">Real-time visibility</h3><p class="cap">Operational states and workflow progress remained visible throughout the service lifecycle.</p></div>
+      <div class="card"><span class="lab">Principle 05</span><h3 class="h-sub">Role-based complexity</h3><p class="cap">Each user experienced only the operational layers relevant to their responsibilities.</p></div>
+      <div class="card card--accent"><span class="lab lab--accent">The goal</span><p class="body" style="color:var(--color-text-primary)">Simplify operational complexity without reducing operational visibility.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ARCHITECTURE ══════════════════════════════════════ -->
+<section class="sunken" id="lifecycle">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Architecture</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Built around the job card lifecycle</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">The platform architecture was centred on the job card, connecting operational workflows, technician activity, inventory and service states into a single execution system.</p>
+
+    <ul class="path rise" style="margin-top:var(--gap-block);max-width:44ch">
+      <li>Vehicle check-in — VIN or plate identification</li>
+      <li>Customer verification and pre-inspection</li>
+      <li>Job card created, services and parts attached</li>
+      <li>Assigned to a bay, assigned to a technician</li>
+      <li>Service execution with live state updates</li>
+      <li>Inventory drawn down against the job card</li>
+      <li>Checkout, invoice, reconciliation</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ BAY OPERATIONS ════════════════════════════════════ -->
+<section id="bays">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Bay operations</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Bay operations &amp; vehicle <em>check-in</em></h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Optimising real-time check-in workflows.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="alt rise">
+      <div class="alt-copy">
+        <div>
+          <h3 class="h-mid"><em>Live</em> bay monitoring</h3>
+          <p class="cap" style="margin-top:var(--space-3)">Real-time visibility into occupancy and operational states.</p>
+        </div>
+        <div>
+          <h3 class="h-mid">Operational state <em>visibility</em></h3>
+          <p class="cap" style="margin-top:var(--space-3)">Service teams could instantly track vehicle progression across active bays.</p>
+        </div>
+      </div>
+      <div class="alt-media">
+        <picture>
+          <source srcset="assets/gms-bay-management.webp" type="image/webp">
+          <img src="assets/gms-bay-management.jpg" width="1800" height="1122" loading="lazy" decoding="async" alt="Bay Management: three bays side by side. Bay 1 and Bay 2 occupied, each showing the vehicle, job card number, an oil change in progress with a Finish or Resume control, a completed brake-pad job, the assigned technician and a Checkout action. Bay 3 available with an Assign Job card button.">
+        </picture>
+      </div>
+    </div>
+
+    <div class="alt alt--rev rise">
+      <div class="alt-media">
+        <picture>
+          <source srcset="assets/gms-vehicle-identification.webp" type="image/webp">
+          <img src="assets/gms-vehicle-identification.jpg" width="1800" height="1111" loading="lazy" decoding="async" alt="Vehicle Identification Review: a four-step sidebar — vehicle identification, verify customer, pre-inspection, job card summary. The main panel shows the vehicle with VIN and odometer, customer information with verified phone numbers and a loyalty tier, and the start of the car service history.">
+        </picture>
+      </div>
+      <div class="alt-copy">
+        <div>
+          <h3 class="h-mid"><em>Quick</em> vehicle identification</h3>
+          <p class="cap" style="margin-top:var(--space-3)">VIN or plate-based identification reduced manual entry effort.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt rise">
+      <div class="alt-copy">
+        <div>
+          <h3 class="h-mid"><em>Guided</em> job creation</h3>
+          <p class="cap" style="margin-top:var(--space-3)">Service recommendations and contextual workflows accelerated check-in operations.</p>
+        </div>
+      </div>
+      <div class="alt-media">
+        <picture>
+          <source srcset="assets/gms-service-cart.webp" type="image/webp">
+          <img src="assets/gms-service-cart.jpg" width="1800" height="1111" loading="lazy" decoding="async" alt="The service cart: tabs for services, packages and spare parts with a recommendations toggle, a searchable service list on the left, an AI-recommended winter tyre offer in the centre, and the vehicle, customer and running VAT total on the right, above Cancel Job card and Save and Assign Bay.">
+        </picture>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DESIGN SYSTEM ═════════════════════════════════════ -->
+<section class="sunken" id="system">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Design system</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">A scalable operational design system</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Six modules and eight roles need one vocabulary, or every team invents its own.</p>
+
+    <div class="g3 rise" style="margin-top:var(--gap-block)">
+      <div class="card"><span class="lab">Components</span><p class="cap" style="margin-top:var(--space-2)">Cards, tables, chips, action hierarchy, workflow panels.</p></div>
+      <div class="card"><span class="lab">Foundations</span><p class="cap" style="margin-top:var(--space-2)">Colour, operational state colours, typography, spacing.</p></div>
+      <div class="card"><span class="lab">Patterns</span><p class="cap" style="margin-top:var(--space-2)">Cart widget, sidebar stepper, right drawer, reusable layouts.</p></div>
+    </div>
+
+    <div class="callout rise" style="margin-top:var(--gap-block)">
+      <span class="lab lab--accent">Operational states</span>
+      <p class="body" style="margin-top:var(--space-2);color:var(--color-text-primary)">In queue, in progress, on hold, scheduled, done, checked out. Six states that had to read identically on a technician's tablet, a manager's dashboard and a finance report — because the same job card appears in all three.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VISIBILITY ════════════════════════════════════════ -->
+<section id="visibility">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Management view</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Real-time operational visibility</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">Management teams gained centralised visibility into workshop operations, service throughput and operational performance — branch analytics, service KPIs, technician productivity, inventory insights, financial tracking.</p>
+  </div>
+
+  <div class="wrap wrap--wide" style="margin-top:var(--gap-block)">
+    <figure class="rise">
+      <div class="shot shot--bleed">
+        <picture>
+          <source srcset="assets/gms-dashboard.webp" type="image/webp">
+          <img src="assets/gms-dashboard.jpg" width="1800" height="1109" loading="lazy" decoding="async"
+               alt="The station dashboard: station status with terminal, open state and timestamp; balance of the previous day showing revenue and opening cash with a Close Day action; and today's performance tiles for sales target against goal, cash earned, staff clocked in, vehicles arrived, services done and bays occupied, each with a change against yesterday.">
+        </picture>
+      </div>
+      <figcaption>The area manager's answer to "I only learn about problems after they happen"</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ══ CHALLENGES ════════════════════════════════════════ -->
+<section class="sunken" id="challenges">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Challenges</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Balancing operational complexity with usability</h2>
+    <div class="g2 rise" style="margin-top:var(--gap-block)">
+      <div class="card"><h3 class="h-sub">Depth without density</h3><p class="cap">Eight roles need eight different amounts of information. Role-based complexity meant each person saw only their layer — the depth stayed in the system, out of the interface.</p></div>
+      <div class="card"><h3 class="h-sub">Speed on a shop floor</h3><p class="cap">A technician with oily hands on a tablet is not a desk user. Scan-first interactions and large targets mattered more than any screen we could have drawn.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OUTCOME ═══════════════════════════════════════════ -->
+<section class="results-band" id="outcome">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Expected outcomes</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">What the design is built to deliver</h2>
+    <p class="lede rise" style="margin-top:var(--gap-group)">One technician-first ecosystem across technicians, service teams, finance, inventory and management — built for operational clarity, workflow efficiency and real-time visibility.</p>
+    <div class="callout rise" style="margin-top:var(--gap-group);border-left-color:var(--p-accent-400)">
+      <p class="body" style="color:var(--color-text-inverse)">These are <b>projections, not measured results</b>. Each one is modelled from task-completion times recorded while watching a single user carry out that specific task on the legacy tools, compared against the same task in the new flow.</p>
+    </div>
+
+    <div class="stats rise" style="margin-top:var(--gap-block)">
+      <div class="stat"><b data-count="31" data-suffix="%">0</b><span>Projected reduction in vehicle turnaround time</span></div>
+      <div class="stat"><b data-count="20" data-suffix=" min">0</b><span>Projected manager onboarding, from two days</span></div>
+      <div class="stat"><b data-count="6" data-suffix="">0</b><span>Core modules on one platform</span></div>
+      <div class="stat"><b data-count="8" data-suffix="">0</b><span>Roles served by one system</span></div>
+    </div>
+
+    <div class="g2 rise" style="margin-top:var(--gap-block)">
+      <div class="card">
+        <span class="lab lab--accent">What was delivered</span>
+        <ul class="path">
+          <li>Multi-role platform across eight responsibilities</li>
+          <li>Real-time workflows on a live dashboard</li>
+          <li>Tablet and web, matched to where the work happens</li>
+          <li>Workflow-centric UX built on operational states</li>
+          <li>Enterprise scalability across the station network</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="lab lab--accent">What it set out to replace</span>
+        <ul class="path">
+          <li>Service, inventory and finance in separate systems</li>
+          <li>Approvals queued behind busy hours</li>
+          <li>Visibility that arrived after the fact</li>
+          <li>Technicians switching tools mid-job</li>
+          <li>Inventory reconciled by hand</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TAKEAWAYS ═════════════════════════════════════════ -->
+<section class="sunken" id="takeaways">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Takeaways</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">Three things this taught me</h2>
+    <div class="rise" style="margin-top:var(--gap-block)">
+      <div class="num"><span class="n">01</span><p class="body" style="color:var(--color-text-primary)">Nobody was missing information — it all existed somewhere. The problem was never data, it was that no single view assembled it in time to act on.</p></div>
+      <div class="num"><span class="n">02</span><p class="body" style="color:var(--color-text-primary)">Five roles described the same fracture from five sides. Interviewing across the hierarchy, not just the primary user, is what made the shape of it visible.</p></div>
+      <div class="num" style="border-bottom:1px solid var(--color-border-subtle)"><span class="n">03</span><p class="body" style="color:var(--color-text-primary)">Choosing the job card as the architectural centre decided more than any screen did. Get the spine right and the modules hang off it; get it wrong and every screen argues with the next.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ KEEP READING · other case studies, then contact ═══ -->
+<section class="next" id="next">
+  <div class="wrap">
+    <div class="chap"><span class="lab">Keep reading</span><span class="rule"></span></div>
+    <h2 class="big h-sect rise">More case studies</h2>
+    <div class="ncards">
+      <a class="ncard rise" href="mojaz-case-study.html">
+        <span class="ncard-th"><picture>
+          <source srcset="assets/mojaz-banner.webp" type="image/webp">
+          <img src="assets/mojaz-banner.jpg" width="2400" height="954" loading="lazy" decoding="async" alt="The Mojaz brand mark — موجز above the Latin wordmark Mojaz, in white on the brand red.">
+        </picture></span>
+        <span class="ncard-who">GoGoMotor · 2026</span>
+        <h3 class="ncard-t">Mojaz Report Landing Page</h3>
+        <span class="ncard-r">38.4k monthly organic sessions</span>
+      </a>
+      <a class="ncard ncard--all rise" href="index.html#work">
+        <span class="ncard-who">Everything else</span>
+        <h3 class="ncard-t">See all work <i aria-hidden="true">↗</i></h3>
+        <span class="ncard-r">Two full case studies and the smaller projects behind them.</span>
+      </a>
+    </div>
+
+    <div class="contact rise">
+      <h2>Want to talk through any of it?</h2>
+      <div class="contact-links">
+        <a class="mailto" href="mailto:rajatsharmajaipur100@gmail.com">rajatsharmajaipur100@gmail.com</a>
+        <a class="mailto" href="https://www.linkedin.com/in/rajat-sharma099/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="mailto" href="assets/gms-case-study.pdf" target="_blank" rel="noopener">Download this case study (PDF) ↓</a>
+      </div>
+    </div>
+
+    <p class="fine" style="margin-top:var(--gap-group);max-width:80ch">Case study prepared for portfolio purposes. Delivered under NDA with Petromin Express. Outcome figures are projections modelled from observed task-completion times, not measured production results.</p>
+
+  </div>
+</section>
+
+</main>
+<div id="toast" role="status"></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+
+<button class="progfab" id="progFab" aria-label="Back to top" title="Back to top">
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle class="pf-track" cx="24" cy="24" r="20.5"/>
+    <circle class="pf-bar" id="pfBar" cx="24" cy="24" r="20.5"/>
+  </svg>
+  <i aria-hidden="true">↑</i>
+  <span class="pf-n" id="pfNum">0%</span>
+</button>
+
+<script>
+const $  = (s,r)=>(r||document).querySelector(s);
+const $$ = (s,r)=>Array.from((r||document).querySelectorAll(s));
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast'); if(!t) return;
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('on'),2400);
+}
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── content arrives; it does not perform ── */
+(function(){
+  const els = $$('.rise');
+  if(RM || !('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{rootMargin:'-6% 0px -10%'});
+  els.forEach(e=>io.observe(e));
+})();
+
+
+/* ── the numbers count up once, when you reach them ── */
+(function(){
+  const nums = $$('[data-count]');
+  if(!nums.length) return;
+  const run = el =>{
+    const to = parseFloat(el.dataset.count), sfx = el.dataset.suffix || '';
+    const dec = (to % 1 !== 0) ? 1 : 0;
+    if(RM){ el.textContent = to.toFixed(dec) + sfx; return; }
+    const dur = 1100, t0 = performance.now();
+    const tick = now =>{
+      const p = Math.min(1,(now-t0)/dur);
+      const e = 1 - Math.pow(1-p,3);            // decelerate, no overshoot
+      el.textContent = (to*e).toFixed(dec) + sfx;
+      if(p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  if(!('IntersectionObserver' in window)){ nums.forEach(run); return; }
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ run(e.target); io.unobserve(e.target); } });
+  },{threshold:.6});
+  nums.forEach(n=>io.observe(n));
+})();
+
+/* ── lights ── */
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const r = document.documentElement;
+  r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+});
+
+/* ══════════════════════════════════════════
+   THE MENU — the same one the portfolio uses. Every chapter links back
+   to index.html, because from here they are all somewhere else.
+   ══════════════════════════════════════════ */
+(function(){
+  const burger = document.getElementById('burger');
+  const menu   = document.getElementById('menu');
+  const scrim  = document.getElementById('scrim');
+  if(!burger || !menu) return;
+  let open = false;
+
+  function set(next){
+    if(open === next) return;
+    open = next;
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menu.classList.toggle('on', open);
+    if(scrim) scrim.classList.toggle('on', open);
+  }
+
+  burger.addEventListener('click', e=>{ e.stopPropagation(); set(!open); });
+  menu.addEventListener('click', e=>{
+    if(!e.target.closest('a')) return;
+    e.stopPropagation();
+    requestAnimationFrame(()=>set(false));
+  });
+  document.addEventListener('click', e=>{
+    if(open && !menu.contains(e.target) && !burger.contains(e.target)) set(false);
+  });
+  addEventListener('keydown', e=>{ if(e.key === 'Escape' && open){ set(false); burger.focus(); } });
+  addEventListener('scroll', ()=>{ if(open) set(false); }, {passive:true});
+  window.__closeMenu = ()=>set(false);
+})();
+
+/* ══════════════════════════════════════════
+   HIRE ME · the same dialog as the portfolio
+   ══════════════════════════════════════════ */
+(function(){
+  const btn   = document.getElementById('hireBtn');
+  const dlg   = document.getElementById('hire');
+  const scrim = document.getElementById('hireScrim');
+  const form  = document.getElementById('hireBrief');
+  const pane  = document.getElementById('hireForm');
+  const done  = document.getElementById('hireDone');
+  if(!btn || !dlg || !form) return;
+  let open = false, lastFocus = null;
+
+  function set(next){
+    if(open === next) return;
+    open = next;
+    dlg.classList.toggle('on', open);
+    scrim.classList.toggle('on', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    if(open){
+      lastFocus = document.activeElement;
+      if(window.__closeMenu) window.__closeMenu();
+      setTimeout(()=>{ const f = $('#hireForm input'); if(f && !done.classList.contains('on')) f.focus(); },320);
+    }else if(lastFocus && lastFocus.focus){ lastFocus.focus(); }
+  }
+
+  btn.addEventListener('click', ()=>set(true));
+  document.getElementById('hireX').addEventListener('click', ()=>set(false));
+  scrim.addEventListener('click', ()=>set(false));
+  dlg.addEventListener('click', e=>{ if(e.target === dlg) set(false); });
+  addEventListener('keydown', e=>{ if(e.key === 'Escape' && open) set(false); });
+
+  addEventListener('keydown', e=>{
+    if(!open || e.key !== 'Tab') return;
+    const f = $$('button,input,textarea,a[href]', dlg).filter(el=>el.offsetParent !== null);
+    if(!f.length) return;
+    const first = f[0], last = f[f.length-1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+
+  const bad = (el,msg)=>{ el.closest('.fld').classList.add('bad'); $('.msg',el.closest('.fld')).textContent = msg; };
+  const ok  = el =>{ el.closest('.fld').classList.remove('bad'); $('.msg',el.closest('.fld')).textContent = ''; };
+  $$('#hireBrief input,#hireBrief textarea').forEach(i=>i.addEventListener('input',()=>ok(i)));
+
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name=$('#hName'), mail=$('#hMail'), idea=$('#hIdea');
+    let pass = true;
+    if(!name.value.trim()){ bad(name,'What should I call you?'); pass=false; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim())){ bad(mail,'I need somewhere to reply.'); pass=false; }
+    if(idea.value.trim().length < 8){ bad(idea,'A sentence is plenty. Two is better.'); pass=false; }
+    if(!pass){ if(compFace) compFace.set('sad',900); return; }
+
+    /* Web3Forms over fetch rather than a native POST, so the success pane and
+       the mascot survive — a plain submit would navigate away to their JSON. */
+    const btn = $('.send', form);
+    const label = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = 'Sending…';
+    try{
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form)
+      });
+      const out = await res.json().catch(()=>({}));
+      if(!res.ok || out.success === false) throw new Error(out.message || ('HTTP ' + res.status));
+
+      form.reset();
+      toast('Sent · I\u2019ll reply to that address');
+      pane.classList.add('off'); done.classList.add('on');
+      if(compFace){ compFace.set('wave',2200); compFace.emotion('success'); }
+      if(endFace){ endFace.rest('wave'); endFace.emotion('delight'); }
+    }catch(err){
+      // never swallow it — offer the address that always works
+      toast('Could not send · write to rajatsharmajaipur100@gmail.com');
+      if(compFace) compFace.set('sad',1200);
+    }finally{
+      btn.disabled = false; btn.innerHTML = label;
+    }
+  });
+})();
+
+/* ══════════════════════════════════════════
+   SCROLL PROGRESS
+   One ring, one number, one way back to the top. r=19.5 → C≈122.5.
+   ══════════════════════════════════════════ */
+(function(){
+  const fab = document.getElementById('progFab');
+  const bar = document.getElementById('pfBar');
+  const num = document.getElementById('pfNum');
+  if(!fab || !bar) return;
+  const C = 2 * Math.PI * (parseFloat(bar.getAttribute('r')) || 20.5);
+  bar.style.strokeDasharray = C.toFixed(2);
+  bar.style.strokeDashoffset = C.toFixed(2);
+
+  let ticking = false;
+  function update(){
+    ticking = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    bar.style.strokeDashoffset = (C * (1 - p)).toFixed(2);
+    num.textContent = Math.round(p * 100) + '%';
+    fab.setAttribute('aria-valuenow', Math.round(p * 100));
+    fab.classList.toggle('on', scrollY > 260);      // stay out of the hero's way
+  }
+  addEventListener('scroll', ()=>{
+    if(!ticking){ ticking = true; requestAnimationFrame(update); }
+  }, {passive:true});
+  addEventListener('resize', update, {passive:true});
+  fab.addEventListener('click', ()=> scrollTo({top:0, behavior:'smooth'}));
+  update();
+})();
+
+
+
+</script>
+</body>
+</html>
