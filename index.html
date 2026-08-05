@@ -1993,13 +1993,25 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
 
 </main>
 <script>
+/* ══════════════════════════════════════════
+   These two used to be declared inside the big IIFE below, which meant the
+   later top-level blocks — the whole-card case study links and the concepts
+   rail — could not see them. Reaching for $$ from there threw a TypeError,
+   and because a top-level throw aborts the rest of a classic script, every
+   block after it died silently: the rail controller never ran, so its dots
+   were never built and its arrows were never wired.
+
+   Declared once here, at the script's own top level, where every block can
+   reach them.
+   ══════════════════════════════════════════ */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+
 (function(){
 "use strict";
 const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const lerp=(a,b,t)=>a+(b-a)*t;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-const $=(s,r)=>(r||document).querySelector(s);
-const $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
 
 /* ══════════════════════════════════════════
    THE FACE
@@ -3069,52 +3081,54 @@ console.log('%c● ━ ●  two dots and a dash — morse for R\n%cNine chapters
   });
 
   cards.forEach(() => dots.append(document.createElement('b')));
-  const pills = Array.from(dots.children);
+  const pills  = Array.from(dots.children);
+  const arrows = $$('.rail-btn');
 
-  function mark(){
-    const r = rail.getBoundingClientRect();
-    const origin = r.left + (parseFloat(getComputedStyle(rail).paddingLeft) || 0);
+  /* Which card is currently parked at the left edge. One function, because the
+     dots and the arrows both need the same answer and must not disagree. */
+  function activeIndex(){
+    const origin = rail.getBoundingClientRect().left
+                 + (parseFloat(getComputedStyle(rail).paddingLeft) || 0);
     let best = 0, near = Infinity;
     cards.forEach((c,i) => {
       const d = Math.abs(c.getBoundingClientRect().left - origin);
       if(d < near){ near = d; best = i; }
     });
-    pills.forEach((p,i) => p.classList.toggle('on', i === best));
+    return best;
+  }
+
+  /* scrollIntoView, not scrollBy. The rail is scroll-snap-type:x mandatory with
+     scroll-padding, so a raw pixel delta has to survive the snap landing on the
+     right card — and the cards are min(86%, 880px), so that delta changes with
+     the viewport. Naming the destination card sidesteps both. This is also what
+     the dots have always used, so both controls share one proven path. */
+  function goTo(i){
+    cards[Math.max(0, Math.min(cards.length - 1, i))]
+      .scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'});
+  }
+
+  function mark(){
+    const at = activeIndex();
+    pills.forEach((p,i) => p.classList.toggle('on', i === at));
+    /* Disabled from the index rather than from scrollLeft: with snap and
+       fractional offsets, scrollLeft rarely reaches exactly 0 or exactly max. */
+    arrows.forEach(b => {
+      b.disabled = Number(b.dataset.dir) < 0 ? at === 0 : at === cards.length - 1;
+    });
   }
 
   pills.forEach((p,i) => {
     p.style.cursor = 'pointer';
-    p.addEventListener('click', () => cards[i].scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'}));
+    p.addEventListener('click', () => goTo(i));
   });
-
-  /* ── arrows ──
-     One card plus one gap per press, measured from the live layout rather than
-     hardcoded: the cards are min(86%, 880px), so the step changes with the
-     viewport. Ends disable rather than hide, so the button does not vanish
-     from under the cursor mid-click. */
-  const arrows = $$('.rail-btn');
-  function step(dir){
-    const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
-    rail.scrollBy({ left: dir * (cards[0].getBoundingClientRect().width + gap), behavior: 'smooth' });
-  }
-  arrows.forEach(b => b.addEventListener('click', () => step(Number(b.dataset.dir))));
-
-  function ends(){
-    if(!arrows.length) return;
-    const max = rail.scrollWidth - rail.clientWidth;
-    arrows.forEach(b => {
-      b.disabled = Number(b.dataset.dir) < 0
-        ? rail.scrollLeft <= 1            // 1px of slack: sub-pixel scroll offsets never land on 0
-        : rail.scrollLeft >= max - 1;
-    });
-  }
+  arrows.forEach(b => b.addEventListener('click', () => goTo(activeIndex() + Number(b.dataset.dir))));
 
   let t = false;
   rail.addEventListener('scroll', () => {
-    if(!t){ t = true; requestAnimationFrame(() => { t = false; mark(); ends(); }); }
+    if(!t){ t = true; requestAnimationFrame(() => { t = false; mark(); }); }
   }, {passive:true});
-  addEventListener('resize', () => { mark(); ends(); }, {passive:true});
-  mark(); ends();
+  addEventListener('resize', mark, {passive:true});
+  mark();
 })();
 
 </script>
