@@ -200,7 +200,7 @@
      46ch at 21px produced two different widths — and they inverted across
      breakpoints, the heading wider on desktop, the support line wider on
      mobile. A font-independent unit is the only way their edges can agree. */
-  --hero-measure:38rem;
+  --hero-measure:52rem;
   --container-wide:min(1680px,87.5%);
   --gutter:22px;
   /* The fixed corner dock. Everything that floats in that corner — the mascot,
@@ -650,11 +650,17 @@ section{padding-block:var(--gap-section)}
   color:var(--color-text-secondary)}
 .hero .hello b{color:var(--color-text-primary);font-weight:var(--p-weight-semibold)}
 /* Shares its measure with the support line below, so the two blocks have the
-   same left and right edges at every width. 38rem still stacks this sentence
-   into three short lines at display-xl — the guideline is five words and this
-   is six, but a narrow measure keeps every individual line short, which is
-   the failure the guideline actually guards against. */
+   same left and right edges at every width.
+
+   Two lines on desktop, broken after "complex" — an explicit br rather than a
+   tuned max-width, because a measure that happens to produce the right break
+   today will produce a different one the moment a font loads slightly wider or
+   the copy changes by a word. The break is a decision, so it is stated.
+   Hidden below 861px, where the sentence wraps to the viewport instead; the
+   space before it stays either way, so nothing runs together. */
 .hero h1{max-width:var(--hero-measure)}
+.hero-br{display:none}
+@media(min-width:861px){ .hero-br{display:inline} }
 .hero .role{font-size:var(--font-lead-size);line-height:var(--font-lead-lh);letter-spacing:var(--font-lead-ls);
   color:var(--color-text-secondary);max-width:var(--hero-measure);
   margin-inline:auto}              /* centred in its own box, so the edges line up with the heading */
@@ -761,19 +767,31 @@ section{padding-block:var(--gap-section)}
 /* ═══ 03 SELECTED WORK ═══ */
 
 .proj{border-bottom:1px solid var(--color-border-subtle);padding:var(--gap-block-half) 0}
+/* :last-of-type is the only exception the rail needs — it closes the group, so
+   it drops its rule. There used to be a :nth-of-type(2) override here as well,
+   from when there were exactly two cards and the second one *was* the last;
+   with a third card that rule was suppressing a real separator. Counting
+   positions ages badly, so this is left to :last-of-type alone and any future
+   card gets its divider without a new rule. */
 .proj:last-of-type{border-bottom:0;padding-bottom:0}
-.proj:nth-of-type(2){border-bottom:0}
 .proj:first-of-type{border-top:1px solid var(--color-border-subtle);margin-top:var(--gap-group)}
 
 /* ── work that cannot be shown ──
    The tag says why there is no link, and the line beside it gives the
    reader something to do instead of a dead end. */
-.nda-row{display:flex;flex-wrap:wrap;align-items:center;
-  gap:var(--space-3) var(--space-5);margin-top:var(--space-6)}
-.nda{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;
+/* The gated badge sits where the other two cards keep their tag — above the
+   title, inside the head. Same margin and padding as .feat-tag, so the three
+   read as one component in three states: accent for featured, neutral for
+   concept, neutral with a lock for gated. The old .nda-row at the foot of the
+   card is gone; a status that qualifies the whole project belongs at the top
+   of it, not after the results. */
+.nda{display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-bottom:var(--space-3);padding:5px 12px;
   border-radius:var(--radius-pill);background:var(--color-surface-fill);
   color:var(--color-text-secondary);font-family:var(--p-font-mono);font-weight:500;
-  font-size:var(--font-caption-size);letter-spacing:.11em;text-transform:uppercase}
+  font-size:var(--font-caption-size);
+  line-height:1.2;                 /* paired, per rule 2 — single-line badge */
+  letter-spacing:.11em;text-transform:uppercase}
 .nda svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;
   stroke-linecap:round;stroke-linejoin:round}
 .linkcta{display:inline-flex;align-items:center;gap:6px;color:var(--color-text-link);
@@ -806,9 +824,29 @@ section{padding-block:var(--gap-section)}
    padding matches the container, so card one lines up with every other
    section on the page. Static — no hover, like the rest of the site. */
 .more{margin-top:var(--gap-block)}
-/* The heading now stands alone — the back-anchor is gone, so this is a plain
-   block rather than a two-child flex row. */
-.more-head{padding-bottom:var(--gap-group)}
+/* Two children again — heading left, rail arrows right. Baseline alignment so
+   the arrows sit on the heading's baseline rather than its box centre. */
+.more-head{display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--space-5);padding-bottom:var(--gap-group)}
+
+/* ── rail arrows ──
+   Hidden below 861px: touch has the swipe and the dots, and adding buttons a
+   thumb has to reach for is worse than the gesture it already knows. A pointer
+   has neither affordance, which is the gap these fill. Disabled rather than
+   hidden at the ends, so the control does not move under the cursor. */
+.rail-nav{display:none;flex:none;gap:var(--space-2)}
+@media(min-width:861px){ .rail-nav{display:flex} }
+.rail-btn{width:38px;height:38px;display:grid;place-items:center;
+  border:1px solid var(--color-border-subtle);border-radius:var(--radius-pill);
+  background:var(--color-surface-page);color:var(--color-text-primary);
+  transition:border-color var(--dur-fast) var(--ease-standard),
+             background var(--dur-fast) var(--ease-standard),
+             opacity var(--dur-fast) var(--ease-standard)}
+.rail-btn:hover{border-color:var(--color-border-strong);background:var(--color-surface-fill)}
+.rail-btn:disabled{opacity:.32;cursor:default}
+.rail-btn:disabled:hover{border-color:var(--color-border-subtle);background:var(--color-surface-page)}
+.rail-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .more-h{margin:0;font-family:var(--p-font-display);
   font-weight:var(--p-weight-semibold);font-size:var(--font-title-l-size);
   line-height:1.06;letter-spacing:var(--font-title-l-ls);color:var(--color-text-primary)}
@@ -1529,7 +1567,7 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
 <section class="hero wrap" aria-label="Hello">
   <div class="hero-in">
     <p class="hello">Hello. I'm <b>Rajat Sharma</b>.</p>
-    <h1 class="big h-hero">I make complex systems feel obvious.</h1>
+    <h1 class="big h-hero">I make complex <br class="hero-br">systems feel obvious.</h1>
     <p class="role">Product designer, 2+ years. Enterprise tools for automotive service operations — across 650+ Petromin Express stations in Saudi Arabia.</p>
     <p class="where"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg><span>Based in <b>Jaipur</b>, Rajasthan, IND</span></p>
 
@@ -1583,7 +1621,10 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
 
     <article class="proj rise" data-key="gms">
       <div class="proj-head">
-        <h3>Garage Management System</h3>
+        <div>
+          <span class="nda"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg> Shipped under NDA</span>
+          <h3>Garage Management System</h3>
+        </div>
         <span class="who">Petromin · 2026</span>
       </div>
       <div class="beats">
@@ -1618,9 +1659,6 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
 
       <div class="res"><b>31% faster operations</b><b>Real-time inventory sync and visibility</b></div>
       <p class="res-note">Projected from user reviews and prototype testing</p>
-      <div class="nda-row">
-        <span class="nda"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg> Shipped under NDA · full case study on request</span>
-      </div>
       <!-- Gated on purpose. The CTA opens the contact dialog rather than a page
            the visitor cannot read, so the label and the action agree. -->
       <button class="proj-cta" type="button" data-hire="access">Request access or a walkthrough <i aria-hidden="true">↗</i></button>
@@ -1660,6 +1698,17 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
     <div class="more">
       <div class="more-head">
         <h3 class="more-h">More concept case studies.</h3>
+        <!-- Desktop only. Touch already has the swipe and the dots; a pointer
+             has neither, and a 86%-wide card gives no hint that a second one
+             exists off the right edge. -->
+        <div class="rail-nav">
+          <button class="rail-btn" type="button" data-dir="-1" aria-label="Previous concept">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 9 12l5.5 5.5"/></svg>
+          </button>
+          <button class="rail-btn" type="button" data-dir="1" aria-label="Next concept">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg>
+          </button>
+        </div>
       </div>
       <div class="hl-rail" role="list" tabindex="0" aria-label="Concept projects, scrollable">
         <a class="hl" href="https://dribbble.com/shots/23174566-Spatial-design-with-traditional-YouTube" target="_blank" rel="noopener" data-k="ytvision">
@@ -3038,12 +3087,34 @@ console.log('%c● ━ ●  two dots and a dash — morse for R\n%cNine chapters
     p.addEventListener('click', () => cards[i].scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'}));
   });
 
+  /* ── arrows ──
+     One card plus one gap per press, measured from the live layout rather than
+     hardcoded: the cards are min(86%, 880px), so the step changes with the
+     viewport. Ends disable rather than hide, so the button does not vanish
+     from under the cursor mid-click. */
+  const arrows = $$('.rail-btn');
+  function step(dir){
+    const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+    rail.scrollBy({ left: dir * (cards[0].getBoundingClientRect().width + gap), behavior: 'smooth' });
+  }
+  arrows.forEach(b => b.addEventListener('click', () => step(Number(b.dataset.dir))));
+
+  function ends(){
+    if(!arrows.length) return;
+    const max = rail.scrollWidth - rail.clientWidth;
+    arrows.forEach(b => {
+      b.disabled = Number(b.dataset.dir) < 0
+        ? rail.scrollLeft <= 1            // 1px of slack: sub-pixel scroll offsets never land on 0
+        : rail.scrollLeft >= max - 1;
+    });
+  }
+
   let t = false;
   rail.addEventListener('scroll', () => {
-    if(!t){ t = true; requestAnimationFrame(() => { t = false; mark(); }); }
+    if(!t){ t = true; requestAnimationFrame(() => { t = false; mark(); ends(); }); }
   }, {passive:true});
-  addEventListener('resize', mark, {passive:true});
-  mark();
+  addEventListener('resize', () => { mark(); ends(); }, {passive:true});
+  mark(); ends();
 })();
 
 </script>
