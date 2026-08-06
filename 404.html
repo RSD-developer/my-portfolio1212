@@ -354,22 +354,15 @@ svg{display:block}
 .four-in{display:flex;flex-direction:column;align-items:center;
   gap:var(--space-7);margin-inline:auto;max-width:40rem}
 
-/* The chapter opener, same object the portfolio uses to start a section — so
-   this reads as part of the sequence rather than a page bolted on the side. */
-.chap{display:flex;align-items:baseline;gap:var(--space-4);width:100%}
-.chap .no{font-family:var(--p-font-mono);font-weight:500;font-variant-numeric:tabular-nums;
-  font-size:var(--font-caption-size);letter-spacing:.14em;color:var(--color-text-tertiary)}
-.chap .nm{font-family:var(--p-font-text);font-weight:500;
-  font-size:var(--font-caption-size);letter-spacing:.1em;
-  text-transform:uppercase;color:var(--color-text-tertiary)}
-.chap .rule{height:1px;flex:1;background:var(--color-border-subtle);align-self:center}
-
 .h-404{font-size:var(--font-display-xl-size);line-height:var(--font-display-xl-lh);
   letter-spacing:var(--font-display-xl-ls);font-weight:var(--p-weight-bold)}
 .four p.lede{font-size:var(--font-lead-size);line-height:var(--font-lead-lh);
   letter-spacing:var(--font-lead-ls);color:var(--color-text-secondary);max-width:38ch}
 
-.acts{display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center;justify-content:center}
+/* Every link on this page is root-relative. A 404 is served at whatever URL
+   the visitor typed, so "index.html" resolves against THAT path — from
+   /work/old-page/ it would point at /work/old-page/index.html and 404 again.
+   A leading slash always means the site root, whatever depth the miss was. */
 .act{display:inline-flex;align-items:center;gap:var(--space-2);
   height:49px;padding:0 var(--space-6);border-radius:var(--radius-pill);
   background:var(--color-action-primary-bg);color:var(--color-action-primary-text);
@@ -379,9 +372,6 @@ svg{display:block}
 .act:hover{background:var(--color-action-primary-bg-hover)}
 .act i{font-style:normal;transition:transform var(--dur-fast) var(--ease-standard)}
 .act:hover i{transform:translateX(3px)}
-/* One filled button, one text link — the pairing the design system asks for. */
-.act--quiet{background:none;color:var(--color-text-link);padding:0;height:auto}
-.act--quiet:hover{background:none;color:var(--color-text-link-hover);text-decoration:underline}
 
 /* ── the mark, becoming a face ──
    Three shapes, two arrangements. In a row they are two dots and a dash —
@@ -440,14 +430,14 @@ svg{display:block}
 <header class="nav">
   <div class="nav-inner">
     <div class="nav-cluster">
-      <a class="navpill backpill" href="index.html" aria-label="Back to portfolio">
+      <a class="navpill backpill" href="/" aria-label="Back to portfolio">
         <span class="np-in">
           <span class="np-t">Back to portfolio</span>
           <span class="np-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg></span>
         </span>
       </a>
 
-      <a class="idpill" href="index.html" aria-label="Rajat Sharma — home">
+      <a class="idpill" href="/" aria-label="Rajat Sharma — home">
         <svg viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="24" cy="50" r="7.5" fill="currentColor"/>
           <rect x="38" y="42.5" width="24" height="15" rx="7.5" fill="currentColor"/>
@@ -455,7 +445,7 @@ svg{display:block}
         </svg>
       </a>
 
-      <a class="navpill respill" href="assets/rajat-sharma-resume.pdf" target="_blank" rel="noopener" aria-label="Download resume">
+      <a class="navpill respill" href="/assets/rajat-sharma-resume.pdf" target="_blank" rel="noopener" aria-label="Download resume">
         <span class="np-in">
           <span class="np-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.2-4.2M12 14.5 7.8 10.3"/><path d="M4.5 19.5h15"/></svg></span>
           <span class="np-t">Resume</span>
@@ -469,12 +459,6 @@ svg{display:block}
   <div class="wrap">
     <div class="four-in">
 
-      <div class="chap">
-        <span class="no">404</span>
-        <span class="nm">Chapter not found</span>
-        <span class="rule"></span>
-      </div>
-
       <!-- Two dots and a dash, sliding into two eyes and a mouth, and back.
            Decorative: the heading below says everything this says. -->
       <div class="morph" aria-hidden="true">
@@ -487,10 +471,10 @@ svg{display:block}
 
       <p class="lede">This chapter was never written — or perhaps it's waiting to be discovered. Either way, the rest of the story is just a click away.</p>
 
-      <div class="acts">
-        <a class="act" href="index.html">Return Home <i aria-hidden="true">→</i></a>
-        <a class="act act--quiet" href="index.html#work">Explore Projects</a>
-      </div>
+      <!-- One action. Two invited a decision nobody lost on a 404 wants to
+           make, and the homepage opens on the work anyway.
+           Root-relative on purpose: see the note in the stylesheet. -->
+      <a class="act" href="/">Return Home <i aria-hidden="true">→</i></a>
 
     </div>
   </div>
