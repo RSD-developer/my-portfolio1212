@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Chapter 404 — Rajat Sharma</title>
+<meta name="description" content="This chapter was never written. The rest of the story is a click away." />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   404 · on STRATUS v1.0
+
+   The token blocks below are copied verbatim from index.html rather than
+   rewritten, so this page cannot drift from the portfolio it belongs to. Only
+   the page-specific components are new.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* Neutral ramp */
+  --p-neutral-0:#ffffff;
+  --p-neutral-25:#fbfbfd;
+  --p-neutral-50:#f5f5f7;
+  --p-neutral-100:#e8e8ed;
+  --p-neutral-200:#d2d2d7;
+  --p-neutral-300:#a1a1a6;
+  --p-neutral-400:#86868b;
+  --p-neutral-500:#6e6e73;
+  --p-neutral-700:#424245;
+  --p-neutral-800:#333336;
+  --p-neutral-900:#1d1d1f;
+  --p-neutral-1000:#000000;
+
+  /* Accent ramp — derived from the original "I'm working on it" blue */
+  --p-accent-300:#8fa8f5;
+  --p-accent-400:#5C82EA;
+  --p-accent-500:#2F5FE0;
+  --p-accent-600:#2A55C9;
+  --p-accent-700:#1F3F96;
+
+  /* Signals — one meaning each, status only, never decoration */
+  --p-signal-success:#1C8F63;   /* it worked         */
+  --p-signal-curious:#B8860B;   /* I want to know    */
+  --p-signal-delight:#D2590F;   /* I enjoyed that    */
+  --p-signal-live:#FF5A00;      /* a symbol sounding right now */
+  --p-signal-critical:#D33A2C;  /* this field needs you        */
+
+  /* Type */
+  /* Instrument Sans — hero headline (Bold) and every section title (Medium).
+     Standing in for Suisse Intl: the same Swiss neo-grotesque discipline,
+     on an open licence, with a full character set. */
+  --p-font-display:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  /* Inter — body copy, buttons and metadata. */
+  --p-font-text:"Inter",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  /* Geist Mono — morse and technical labels. */
+  --p-font-mono:"Geist Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --p-font-label:var(--p-font-text);
+
+  --p-weight-regular:400;
+  --p-weight-medium:500;
+  --p-weight-semibold:500;   /* section titles are Medium, not Semibold */
+  --p-weight-bold:700;
+}
+
+:root{
+  --color-text-primary:var(--p-neutral-900);
+  --color-text-secondary:var(--p-neutral-500);
+  --color-text-tertiary:var(--p-neutral-400);
+  --color-text-inverse:var(--p-neutral-0);
+  --color-text-inverse-secondary:var(--p-neutral-400);
+  --color-text-link:var(--p-accent-600);
+  --color-text-link-hover:var(--p-accent-500);
+
+  --color-surface-page:var(--p-neutral-0);
+  --color-surface-sunken:var(--p-neutral-50);
+  --color-surface-raised:var(--p-neutral-0);
+  --color-surface-fill:var(--p-neutral-100);
+  --color-surface-inverse:var(--p-neutral-900);
+  --color-surface-accent:var(--p-accent-500);
+  --color-surface-accent-subtle:color-mix(in srgb,var(--p-accent-500) 8%,transparent);
+  --color-surface-accent-tint:color-mix(in srgb,var(--p-accent-500) 12%,transparent);
+
+  --color-border-subtle:var(--p-neutral-200);
+  --color-border-soft:var(--p-neutral-100);
+  --color-border-strong:var(--p-neutral-300);
+  --color-border-focus:var(--p-accent-500);
+
+  --color-action-primary-bg:var(--p-accent-500);
+  --color-action-primary-bg-hover:var(--p-accent-400);
+  --color-action-primary-text:var(--p-neutral-0);
+  /* New intent, per the Stratus rule: when no alias fits, add one rather than
+     reaching for a primitive — or, worse, spending a *surface* token as ink.
+     This is accent applied to a glyph, which is neither a link nor a fill. */
+  --color-icon-accent:var(--p-accent-500);
+
+  /* ── Constant-dark media surfaces ──
+     A card with a photograph behind it does not invert when the theme does —
+     the photograph stays where it is, so the scrim and the copy on top of it
+     must stay put too. surface-inverse is the wrong token here: it flips to
+     near-white in dark and would erase the text sitting on it. These four
+     are therefore deliberately absent from the dark remap below.            */
+  --color-surface-media:var(--p-neutral-900);      /* the dark media card    */
+  --color-surface-media-fill:var(--p-neutral-800); /* its broken-image state */
+  --color-surface-media-alt:var(--p-neutral-50);   /* the light media card   */
+  --color-text-on-media:var(--p-neutral-0);
+
+  /* Accent legible on whatever surface-inverse currently is. In light that
+     surface is dark, so the accent brightens; in dark it is near-white, so
+     the accent must darken again. Hard-coding 400 broke the second case. */
+  --color-text-link-on-inverse:var(--p-accent-400);
+
+  /* ── TYPE SCALE ──
+     INSTRUMENT SANS · display + title steps. A Swiss neo-grotesque with a
+     tall x-height, and noticeably tighter default spacing than Suisse — so
+     the tracking eases off about four units versus the Suisse tuning:
+     -0.018em at 80px, relaxing to -0.010em by 24px. Leading stays close;
+     the tall x-height fills the line without help.
+
+     INTER · lead, body, callout, caption. Follows Inter's own tracking curve:
+     roughly -0.011em through the text sizes, relaxing to 0 at caption, where
+     small text needs the air back rather than less of it.                  */
+  --font-display-xl-size:clamp(2.5rem,1.10rem + 5.83vw,5rem);        /* 40→80 */
+  --font-display-xl-lh:1.02;   --font-display-xl-ls:-0.018em;
+  --font-display-l-size:clamp(2.25rem,1.34rem + 3.79vw,4rem);        /* 36→64 */
+  --font-display-l-lh:1.05;    --font-display-l-ls:-0.016em;
+  --font-display-m-size:clamp(2rem,1.35rem + 2.72vw,3.5rem);         /* 32→56 */
+  --font-display-m-lh:1.06;    --font-display-m-ls:-0.015em;
+  --font-display-s-size:clamp(1.75rem,1.35rem + 1.70vw,3rem);        /* 28→48 */
+  --font-display-s-lh:1.08;    --font-display-s-ls:-0.013em;
+  --font-title-xl-size:clamp(1.75rem,1.55rem + 0.85vw,2.5rem);       /* 28→40 */
+  --font-title-xl-lh:1.10;     --font-title-xl-ls:-0.012em;
+  --font-title-l-size:clamp(1.5rem,1.37rem + 0.55vw,2rem);           /* 24→32 */
+  --font-title-l-lh:1.14;      --font-title-l-ls:-0.010em;
+  --font-title-m-size:clamp(1.375rem,1.28rem + 0.41vw,1.75rem);      /* 22→28 */
+  --font-title-m-lh:1.16;      --font-title-m-ls:-0.011em;
+  --font-title-s-size:clamp(1.25rem,1.19rem + 0.27vw,1.5rem);        /* 20→24 */
+  --font-title-s-lh:1.20;      --font-title-s-ls:-0.010em;
+  --font-lead-size:clamp(1.1875rem,1.16rem + 0.14vw,1.3125rem);      /* 19→21 */
+  --font-lead-lh:1.42;         --font-lead-ls:-0.011em;
+  --font-body-size:1.0625rem;  /* 17 — locked */
+  --font-body-lh:1.50;         --font-body-ls:-0.011em;
+  --font-callout-size:0.875rem;/* 14 */
+  --font-callout-lh:1.45;      --font-callout-ls:-0.006em;
+  --font-caption-size:0.75rem; /* 12 */
+  --font-caption-lh:1.35;      --font-caption-ls:0em;
+
+  /* ── SPACE ── 4px base */
+  --space-1:4px;   --space-2:8px;   --space-3:12px;  --space-4:16px;
+  --space-5:20px;  --space-6:24px;  --space-7:32px;  --space-8:40px;
+  --space-9:48px;  --space-10:64px; --space-11:80px; --space-12:110px;
+  --space-13:130px;--space-14:160px;
+
+  /* ══ SPACING HIERARCHY ══
+     Four tiers, and one rule: the gap between two sections must always read
+     as larger than the largest gap inside either of them. Before this, two
+     projects sat 96px apart while two whole sections sat 88–112px apart —
+     the page had no chapters, just an even drizzle of white.
+
+                        mobile   desktop
+       1 · section       64      120     two sections   (2 x --gap-section)
+       2 · block         36       72     major blocks inside a section
+       3 · group         24       44     a heading and its content
+       4 · item          14       24     inside a group
+
+     --gap-section hits its 60px ceiling at a 1071px viewport, so every
+     desktop width gets exactly 120px between sections — it does not keep
+     growing on a wide monitor. The floor lands by 571px, so phones get 64.
+
+     Each tier is roughly double the one under it, so the steps are legible
+     rather than merely different.                                        */
+  --gap-section:clamp(32px,5.6vw,60px);    /* boundary = 2x → 64 mobile · 120 desktop */
+  --gap-block:clamp(36px,4vw,72px);
+  --gap-block-half:clamp(18px,2vw,36px);   /* when both sides pad, e.g. .proj */
+  --gap-group:clamp(24px,2.6vw,44px);
+  --gap-item:clamp(14px,1.4vw,24px);
+
+  /* ── LAYOUT ── */
+  --container-narrow:692px;
+  --container-default:980px;
+  /* One measure shared by the hero heading and its support line. In rem, not
+     ch: ch resolves against each element's own font-size, so 15ch at 80px and
+     46ch at 21px produced two different widths — and they inverted across
+     breakpoints, the heading wider on desktop, the support line wider on
+     mobile. A font-independent unit is the only way their edges can agree. */
+  --hero-measure:52rem;
+  --container-wide:min(1680px,87.5%);
+  --gutter:22px;
+  /* The fixed corner dock. Everything that floats in that corner — the mascot,
+     the resume button stacked above it, and the toast that must clear both —
+     measures from these four, so the stack can never come apart. */
+  --dock-bottom:clamp(16px,5vh,50px);
+  --dock-right:clamp(16px,4vw,44px);
+  --dock-size:60px;   /* the mascot disc, mobile */
+  --fab-size:var(--dock-size);   /* matched to the mascot — one dock, two discs */
+
+  /* ── RADIUS ── */
+  --radius-xs:5px;  --radius-sm:8px;  --radius-md:12px; --radius-lg:18px;
+  --radius-xl:28px; --radius-2xl:36px; --radius-pill:980px;
+
+  /* ── ELEVATION ── depth is tone + radius; shadows are a last resort */
+  --elevation-1:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);
+  --elevation-2:0 4px 12px rgba(0,0,0,.06),0 12px 32px rgba(0,0,0,.06);
+  --elevation-3:0 8px 24px rgba(0,0,0,.08),0 24px 64px rgba(0,0,0,.10);
+
+  /* ── MOTION ── no bounce, no overshoot */
+  --ease-standard:cubic-bezier(.4,0,.6,1);
+  --ease-inout:cubic-bezier(.42,0,.58,1);
+  --ease-decel:cubic-bezier(.25,.1,.3,1);
+  --dur-instant:100ms; --dur-fast:200ms; --dur-base:300ms;
+  --dur-slow:500ms;    --dur-reveal:800ms;
+
+  --focus-ring:0 0 0 4px color-mix(in srgb,var(--p-accent-500) 40%,transparent);
+}
+
+:root{
+  --bg:var(--color-surface-page);
+  --bg-elev:var(--color-surface-sunken);
+  --ink:var(--color-text-primary);
+  --ink-2:var(--color-text-secondary);
+  --ink-3:var(--color-text-tertiary);
+  --line:var(--color-border-subtle);
+  --line-soft:var(--color-border-soft);
+
+  --emo-success:var(--p-signal-success);
+  --emo-think:var(--p-accent-500);
+  --emo-curious:var(--p-signal-curious);
+  --emo-delight:var(--p-signal-delight);
+
+  --display:var(--p-font-display);
+  --sans:var(--p-font-text);
+  --mono:var(--p-font-mono);
+
+  --ease:var(--ease-standard);
+  --spring:var(--ease-decel);      /* overshoot retired */
+  --t-fast:var(--dur-fast);
+  --t:var(--dur-base);
+  --t-slow:var(--dur-slow);
+
+  --gut:var(--gutter);
+  --max:var(--container-default);
+}
+
+html[data-theme="dark"]{
+  --color-text-primary:#f5f5f7;
+  --color-text-secondary:var(--p-neutral-400);
+  --color-text-tertiary:var(--p-neutral-500);
+  --color-text-inverse:var(--p-neutral-900);
+  --color-text-inverse-secondary:var(--p-neutral-500);
+  --color-text-link:var(--p-accent-400);
+  --color-text-link-hover:var(--p-accent-300);
+  /* Accent ink brightens in dark exactly as the link does — 500 goes muddy
+     against near-black. */
+  --color-icon-accent:var(--p-accent-400);
+  /* surface-inverse is near-white here, so accent-on-inverse must go dark to
+     clear contrast — the mirror of its light-theme value. */
+  --color-text-link-on-inverse:var(--p-accent-600);
+
+  --color-surface-page:var(--p-neutral-1000);
+  --color-surface-sunken:var(--p-neutral-900);
+  --color-surface-raised:var(--p-neutral-900);
+  --color-surface-fill:var(--p-neutral-800);
+  --color-surface-inverse:var(--p-neutral-50);
+
+  --color-border-subtle:var(--p-neutral-700);
+  --color-border-soft:#232325;
+  --color-border-strong:var(--p-neutral-500);
+
+  --p-signal-success:#3FBF8C;
+  --p-signal-curious:#E8B93F;
+  --p-signal-delight:#FF9155;
+  --p-signal-live:#FF7A33;
+  --p-signal-critical:#FF6B5E;
+  --emo-think:var(--p-accent-400);
+
+  --elevation-1:0 1px 2px rgba(0,0,0,.4);
+  --elevation-2:0 4px 16px rgba(0,0,0,.5);
+  --elevation-3:0 12px 40px rgba(0,0,0,.6);
+}
+
+/* ═══ base ═══ */
+*,*::before,*::after{box-sizing:border-box}
+h1,h2,h3,h4,p,figure,ul,ol,dl{margin:0}
+ul,ol{padding-inline-start:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);
+  font-family:var(--p-font-text);font-size:var(--font-body-size);
+  line-height:var(--font-body-lh);letter-spacing:var(--font-body-ls);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid var(--color-border-focus);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--container-default);margin:0 auto;padding-inline:var(--gutter);width:100%}
+.mono{font-family:var(--p-font-mono);font-size:var(--font-caption-size);
+  font-weight:var(--p-weight-medium);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--color-text-tertiary)}
+.big{font-family:var(--p-font-display);font-weight:var(--p-weight-semibold);text-wrap:balance}
+
+/* ═══ header · the same bar the case studies use ═══ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:140;
+  padding-block:clamp(12px,2vh,20px);pointer-events:none}
+.nav-inner{max-width:var(--container-default);margin-inline:auto;
+  padding-inline:var(--gutter);display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;gap:var(--space-3)}
+.nav-inner>*{pointer-events:auto}
+.nav-cluster{grid-column:2;display:flex;align-items:center;gap:var(--space-1);position:relative}
+
+.idpill{flex:none;width:clamp(104px,12vw,132px);height:49px;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-pill);
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  box-shadow:var(--elevation-1);
+  transition:border-color var(--dur-fast) var(--ease-standard)}
+.idpill:hover{border-color:var(--color-border-strong)}
+.idpill svg{width:52px;height:52px;color:var(--color-text-primary)}
+
+.navpill{position:relative;width:49px;height:49px;flex:none;display:block;
+  -webkit-tap-highlight-color:transparent}
+.np-in{position:absolute;top:0;height:49px;display:flex;align-items:center;
+  padding:7px;border-radius:var(--radius-pill);white-space:nowrap;
+  background:var(--color-surface-sunken);border:1px solid var(--color-border-subtle);
+  box-shadow:var(--elevation-1);color:var(--color-text-primary);
+  font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-callout-size);letter-spacing:var(--font-callout-ls);
+  transition:border-color var(--dur-fast) var(--ease-standard),
+             background var(--dur-fast) var(--ease-standard)}
+.np-ic{width:33px;height:33px;flex:none;display:grid;place-items:center}
+.np-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.np-t{display:block;max-width:0;opacity:0;overflow:hidden;
+  transition:max-width 420ms var(--ease-decel),padding 420ms var(--ease-decel),
+             opacity 240ms var(--ease-standard)}
+.backpill .np-in{right:0;background:var(--color-action-primary-bg);
+  border-color:transparent;color:var(--color-action-primary-text)}
+.respill .np-in{left:0}
+@media(max-width:734px){
+  .nav-inner{display:flex}
+  .nav-cluster{grid-column:auto;width:100%}
+  .idpill{flex:1;width:auto;min-width:0}
+}
+@media(hover:hover) and (pointer:fine){
+  .backpill:hover .np-t,.backpill:focus-visible .np-t{max-width:12rem;opacity:1;padding:0 6px 0 12px}
+  .respill:hover .np-t,.respill:focus-visible .np-t{max-width:12rem;opacity:1;padding:0 12px 0 6px}
+  .backpill:hover .np-in,.backpill:focus-visible .np-in{background:var(--color-action-primary-bg-hover)}
+  .respill:hover .np-in,.respill:focus-visible .np-in{border-color:var(--color-border-strong)}
+}
+
+/* ═══ the page ═══ */
+.four{min-height:100svh;display:flex;align-items:center;text-align:center;
+  padding:calc(89px + var(--space-8)) 0 var(--space-11)}
+.four-in{display:flex;flex-direction:column;align-items:center;
+  gap:var(--space-7);margin-inline:auto;max-width:40rem}
+
+/* The chapter opener, same object the portfolio uses to start a section — so
+   this reads as part of the sequence rather than a page bolted on the side. */
+.chap{display:flex;align-items:baseline;gap:var(--space-4);width:100%}
+.chap .no{font-family:var(--p-font-mono);font-weight:500;font-variant-numeric:tabular-nums;
+  font-size:var(--font-caption-size);letter-spacing:.14em;color:var(--color-text-tertiary)}
+.chap .nm{font-family:var(--p-font-text);font-weight:500;
+  font-size:var(--font-caption-size);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--color-text-tertiary)}
+.chap .rule{height:1px;flex:1;background:var(--color-border-subtle);align-self:center}
+
+.h-404{font-size:var(--font-display-xl-size);line-height:var(--font-display-xl-lh);
+  letter-spacing:var(--font-display-xl-ls);font-weight:var(--p-weight-bold)}
+.four p.lede{font-size:var(--font-lead-size);line-height:var(--font-lead-lh);
+  letter-spacing:var(--font-lead-ls);color:var(--color-text-secondary);max-width:38ch}
+
+.acts{display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center;justify-content:center}
+.act{display:inline-flex;align-items:center;gap:var(--space-2);
+  height:49px;padding:0 var(--space-6);border-radius:var(--radius-pill);
+  background:var(--color-action-primary-bg);color:var(--color-action-primary-text);
+  font-weight:var(--p-weight-medium);font-size:var(--font-callout-size);
+  line-height:1.2;letter-spacing:var(--font-callout-ls);white-space:nowrap;
+  transition:background var(--dur-fast) var(--ease-standard)}
+.act:hover{background:var(--color-action-primary-bg-hover)}
+.act i{font-style:normal;transition:transform var(--dur-fast) var(--ease-standard)}
+.act:hover i{transform:translateX(3px)}
+/* One filled button, one text link — the pairing the design system asks for. */
+.act--quiet{background:none;color:var(--color-text-link);padding:0;height:auto}
+.act--quiet:hover{background:none;color:var(--color-text-link-hover);text-decoration:underline}
+
+/* ── the mark, becoming a face ──
+   Three shapes, two arrangements. In a row they are two dots and a dash —
+   morse for R. Slid into a triangle they are two eyes and a mouth. The site
+   has always claimed the logo is both; this is the only place that shows it.
+
+   Sized in em off the container's own font-size, so one clamp scales the whole
+   figure and every offset below can stay a fixed em value. Transform and
+   opacity only, per the motion rule — nothing here animates layout.
+   ══════════════════════════════════════════ */
+.morph{position:relative;width:12em;height:12em;flex:none;
+  font-size:clamp(10px,.55vw + 8px,15px);color:var(--color-text-primary)}
+.morph i{position:absolute;display:block;background:currentColor;
+  border-radius:var(--radius-pill);
+  animation-duration:5.4s;animation-iteration-count:infinite;
+  animation-timing-function:cubic-bezier(.65,0,.35,1)}
+.morph .d{width:1.5em;height:1.5em;top:5.25em}
+.morph .a{left:1.8em;animation-name:eyeL}
+.morph .b{left:8.7em;animation-name:eyeR}
+.morph .l{left:3.9em;top:5.25em;width:4.2em;height:1.5em;animation-name:mouth}
+
+/* Left dot travels up and right to become the left eye, blinks once while it
+   is a face, then goes back. */
+@keyframes eyeL{
+  0%,16%   {transform:none}
+  32%,46%  {transform:translate(1.85em,-1.4em) scaleY(1)}
+  50%      {transform:translate(1.85em,-1.4em) scaleY(.16)}
+  54%,64%  {transform:translate(1.85em,-1.4em) scaleY(1)}
+  80%,100% {transform:none}
+}
+@keyframes eyeR{
+  0%,16%   {transform:none}
+  32%,46%  {transform:translate(-1.85em,-1.4em) scaleY(1)}
+  50%      {transform:translate(-1.85em,-1.4em) scaleY(.16)}
+  54%,64%  {transform:translate(-1.85em,-1.4em) scaleY(1)}
+  80%,100% {transform:none}
+}
+/* The dash drops and narrows into a mouth. Scaling from the centre means the
+   translate only has to account for the centre-to-centre move. */
+@keyframes mouth{
+  0%,16%   {transform:none}
+  32%,64%  {transform:translate(0,2.4em) scale(.81,.733)}
+  80%,100% {transform:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  /* Rest in the morse arrangement — the logo, which is what a visitor who
+     dislikes motion would expect to see. */
+  .morph i{animation:none!important}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-cluster">
+      <a class="navpill backpill" href="index.html" aria-label="Back to portfolio">
+        <span class="np-in">
+          <span class="np-t">Back to portfolio</span>
+          <span class="np-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg></span>
+        </span>
+      </a>
+
+      <a class="idpill" href="index.html" aria-label="Rajat Sharma — home">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="24" cy="50" r="7.5" fill="currentColor"/>
+          <rect x="38" y="42.5" width="24" height="15" rx="7.5" fill="currentColor"/>
+          <circle cx="76" cy="50" r="7.5" fill="currentColor"/>
+        </svg>
+      </a>
+
+      <a class="navpill respill" href="assets/rajat-sharma-resume.pdf" target="_blank" rel="noopener" aria-label="Download resume">
+        <span class="np-in">
+          <span class="np-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0 4.2-4.2M12 14.5 7.8 10.3"/><path d="M4.5 19.5h15"/></svg></span>
+          <span class="np-t">Resume</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="four">
+  <div class="wrap">
+    <div class="four-in">
+
+      <div class="chap">
+        <span class="no">404</span>
+        <span class="nm">Chapter not found</span>
+        <span class="rule"></span>
+      </div>
+
+      <!-- Two dots and a dash, sliding into two eyes and a mouth, and back.
+           Decorative: the heading below says everything this says. -->
+      <div class="morph" aria-hidden="true">
+        <i class="d a"></i>
+        <i class="l"></i>
+        <i class="d b"></i>
+      </div>
+
+      <h1 class="big h-404">Chapter 404</h1>
+
+      <p class="lede">This chapter was never written — or perhaps it's waiting to be discovered. Either way, the rest of the story is just a click away.</p>
+
+      <div class="acts">
+        <a class="act" href="index.html">Return Home <i aria-hidden="true">→</i></a>
+        <a class="act act--quiet" href="index.html#work">Explore Projects</a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+/* Match the visitor's system theme — the portfolio ships a dark palette and a
+   404 is a bad place to be blinded. */
+(function(){
+  var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(dark) document.documentElement.dataset.theme = 'dark';
+})();
+</script>
+</body>
+</html>
