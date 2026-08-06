@@ -989,10 +989,17 @@ section{padding-block:var(--gap-section)}
    copy above. gap is --space-3, which is exactly 12px — one token governs
    both axes, so the horizontal and vertical rhythm cannot drift apart.      */
 .scale-k{margin-top:var(--space-8)}
-.scale{list-style:none;display:flex;flex-wrap:wrap;
-  justify-content:flex-start;align-items:stretch;
+/* A grid, not a wrapping flex row. Sized to their own content the four cards
+   came out four different widths and broke into a ragged 3+1, which reads as
+   an accident rather than a set. Equal columns make them one block, and grid
+   rows stretch by default so a two-line label no longer leaves its neighbours
+   short. Four across, two on tablet, one on a phone. */
+.scale{list-style:none;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:var(--space-3);margin-top:var(--space-4)}
-.scale li{flex:0 1 auto;min-width:0;
+@media(max-width:860px){ .scale{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media(max-width:430px){ .scale{grid-template-columns:1fr} }
+.scale li{min-width:0;
   display:flex;flex-direction:column;align-items:flex-start;
   gap:var(--space-1);text-align:left;
   border:1px solid var(--color-border-subtle);border-radius:var(--radius-md);
@@ -1568,7 +1575,7 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
   <div class="hero-in">
     <p class="hello">Hello. I'm <b>Rajat Sharma</b>.</p>
     <h1 class="big h-hero">I make complex <br class="hero-br">systems feel obvious.</h1>
-    <p class="role">Product designer, 2+ years. Enterprise tools for automotive service operations — across 650+ Petromin Express stations in Saudi Arabia.</p>
+    <p class="role">Product Designer, 2+ years. Recently designed operational software used across 650+ Petromin Express stations in Saudi Arabia.</p>
     <p class="where"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg><span>Based in <b>Jaipur</b>, Rajasthan, IND</span></p>
 
     <!-- Work is the very next band, so a jump link would only skip the scroll
@@ -1778,6 +1785,16 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
       <li><span class="d-n">Purchase flows</span><span class="d-w">First look to committed buyer, without a dead end</span></li>
       <li><span class="d-n">User journeys</span><span class="d-w">Where people drop off, and what they were actually after</span></li>
     </ul>
+
+    <!-- Third group, same two-column list as the two above. Grouped rather
+         than one long row: an undifferentiated pile of thirteen logos says
+         "I have tried things", three labelled rows say what each is for. -->
+    <p class="build-kicker mono rise">Tools</p>
+    <ul class="domains rise" aria-label="Tools I work with">
+      <li><span class="d-n">Design and craft</span><span class="d-w">Figma, Adobe Illustrator, Adobe Express</span></li>
+      <li><span class="d-n">Thinking partner</span><span class="d-w">Claude, Claude Code, ChatGPT, Gemini</span></li>
+      <li><span class="d-n">Prototype and generate</span><span class="d-w">Figma Make, v0, Lovable, Base44, Ideogram</span></li>
+    </ul>
   </div>
 </section>
 
@@ -1889,10 +1906,11 @@ html[data-theme="dark"] .orbit img{filter:drop-shadow(0 16px 26px rgba(0,0,0,.55
           <span class="g-w">years in product design</span>
         </li>
       </ul>
-      <p class="glance-note">Those thirteen cover email templates, landing pages, SaaS and B2C flows, purchase journeys and marketing sites — consumer work and operational tooling, often in the same month.</p>
+      <p class="glance-note">Those thirteen cover email templates, landing pages, SaaS and B2C flows, purchase journeys and marketing sites — plus the decks and infographics that explain them to the people signing off. Consumer work and operational tooling, often in the same month.</p>
 
       <p>I'm self-taught.</p>
       <p class="small">No critique room, no safety net. So the people using the work became both.</p>
+      <p class="small">I use AI as a thinking partner — to accelerate research, explore design directions and prototype ideas faster, while keeping product decisions grounded in user and business needs.</p>
 
       <!-- Four paragraphs in a column this narrow is a wall. The first one
            carries the point; the rest is for anyone who wants it. -->
